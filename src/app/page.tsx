@@ -25,6 +25,7 @@ import {
   DollarSign,
   PlusCircle,
   ArrowRightCircle,
+  UserPlus,
 } from 'lucide-react';
 
 export default function Home() {
@@ -65,39 +66,11 @@ export default function Home() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <span>R$ 0,00</span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Recarregar</DropdownMenuItem>
-              <DropdownMenuItem>Histórico</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button variant="ghost">Entrar</Button>
           <Button className="bg-green-500 hover:bg-green-600 text-white">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Depositar
+            <UserPlus className="mr-2 h-4 w-4" />
+            Registrar
           </Button>
-          <Button className="bg-green-500 hover:bg-green-600 text-white">
-            <ArrowRightCircle className="mr-2 h-4 w-4" />
-            Sacar
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                <span>Eligendi...</span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Minha Conta</DropdownMenuItem>
-              <DropdownMenuItem>Sair</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </header>
       <main className="p-4 md:p-8">

@@ -1,0 +1,99 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. The primary goal is to
+ * secure user profile data, ensuring that users can only access and modify their own
+ * information. All data is scoped to the authenticated user.
+ *
+ * Data Structure: The data is organized under a single top-level collection `/users`, where
+ * each document's ID `{userId}` corresponds directly to a user's Firebase Authentication UID.
+ * This path-based ownership is the foundation of the security model.
+ *
+ * Key Security Decisions:
+ * - User Enumeration is Disabled: Listing the entire `/users` collection is explicitly forbidden
+ *   to protect user privacy and prevent scraping of user data.
+ * - Strict Ownership: All read and write operations on a user's document are restricted
+ *   to the authenticated user who owns that document.
+ * - Self-Creation: Authenticated users are permitted to create their own user profile document,
+ *   a necessary step for new user onboarding flows.
+ * - Default Deny: Any access that is not explicitly granted is denied.
+ *
+ * Denormalization for Authorization: The authorization model relies entirely on the document path
+ * (`/users/{userId}`) matching the authenticated user's UID. This is the most efficient
+ * security pattern as it requires no extra document reads (`get` calls) to make an
+ * authorization decision. The user's `id` field within the document is also enforced to align
+ * with the path, ensuring relational integrity.
+ *
+ * Structural Segregation: This principle is not applicable in this simple model, as there is
+ * only one type of data (private user profiles) and no public/private distinction within
+ * a single collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions to improve readability and maintainability.
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the given userId.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks if the authenticated user is the owner of an EXISTING document.
+     * Crucial for safe update and delete operations.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * Validates a user creating their own profile.
+     * Ensures the document's internal `id` field matches the user's auth UID for integrity.
+     */
+    function isCreatingOwnProfile(userId) {
+      return isOwner(userId) && request.resource.data.id == userId;
+    }
+    
+    /**
+     * Validates a user updating their own profile.
+     * Enforces immutability of the user's unique ID.
+     */
+    function isUpdatingOwnProfile(userId) {
+      // The user must be the owner of the existing document.
+      // The `id` field within the document must not be changed.
+      return isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+    }
+
+    /**
+     * @description Secures user profile documents, ensuring they are only accessible by their owner.
+     * @path /users/{userId}
+     * @allow A user with UID 'user123' can (get) their own profile at `/users/user123`.
+     * @deny A user with UID 'user123' cannot (get) another user's profile at `/users/user456`.
+     * @principle Restricts access to a user's own data tree using path-based ownership.
+     */
+    match /users/{userId} {
+      // READ: Only the document owner can get their own profile.
+      allow get: if isOwner(userId);
+      
+      // DENY LIST: No one can list documents in the /users collection to prevent user enumeration.
+      allow list: if false;
+
+      // CREATE: A user can create their own profile document.
+      allow create: if isCreatingOwnProfile(userId);
+      
+      // UPDATE: The owner can update their own profile, but cannot change their ID.
+      allow update: if isUpdatingOwnProfile(userId);
+
+      // DELETE: The owner can delete their own profile document.
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

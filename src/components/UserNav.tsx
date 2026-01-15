@@ -32,11 +32,11 @@ export function UserNav() {
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'S';
-    return name.substring(0, 1);
+    return name.substring(0, 1).toUpperCase();
   };
 
   const displayName =
-    user?.displayName || user?.email?.split('@')[0] || 'Shit Poster';
+    user?.displayName || user?.email?.split('@')[0] || 'User';
 
   return (
     <div className="flex items-center gap-4">
@@ -80,6 +80,11 @@ export function UserNav() {
       <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
         <Landmark className="h-4 w-4" />
         Depositar
+      </Button>
+
+      <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
+        <WalletCards className="h-4 w-4" />
+        Sacar
       </Button>
 
       <DropdownMenu>

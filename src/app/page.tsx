@@ -11,23 +11,13 @@ import {
 } from '@/components/ui/carousel';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  ChevronDown,
   Gift,
   Home as HomeIcon,
   Star,
-  User,
-  DollarSign,
-  PlusCircle,
-  ArrowRightCircle,
   UserPlus,
 } from 'lucide-react';
 import { ScratchCards } from '@/components/ScratchCards';
+import { Footer } from '@/components/Footer';
 
 const WinnersTicker = () => (
   <>
@@ -326,6 +316,7 @@ export default function HomePage() {
         <WinnersTicker />
         <ScratchCards />
       </main>
+      <Footer />
     </div>
   );
 }

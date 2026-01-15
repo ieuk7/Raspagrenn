@@ -67,7 +67,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost">Entrar</Button>
-          <Button className="bg-green-500 hover:bg-green-600 text-white">
+          <Button>
             <UserPlus className="mr-2 h-4 w-4" />
             Registrar
           </Button>

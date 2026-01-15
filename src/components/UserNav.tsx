@@ -32,11 +32,7 @@ export function UserNav() {
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'S';
-    const names = name.split(' ');
-    if (names.length > 1) {
-      return `${names[0][0]}${names[names.length - 1][0]}`;
-    }
-    return name.substring(0, 2);
+    return name.substring(0, 1);
   };
 
   const displayName =
@@ -44,18 +40,46 @@ export function UserNav() {
 
   return (
     <div className="flex items-center gap-4">
-      <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
-        R$ 0,00
-        <ChevronDown className="h-4 w-4" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
+            R$ 0,00
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-64 p-4" align="end">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-bold text-primary">R$ 0,00</span>
+              <span className="text-muted-foreground">Saldo</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-bold text-primary">R$ 0,00</span>
+              <span className="text-muted-foreground">Bônus</span>
+            </div>
+          </div>
+          <DropdownMenuSeparator className="my-3" />
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-foreground">Total</span>
+              <span className="font-bold text-lg text-primary">R$ 0,00</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              O saldo total é a soma do seu saldo e bônus.
+            </p>
+          </div>
+          <DropdownMenuItem asChild className="mt-4 p-0 focus:bg-transparent">
+            <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
+              <WalletCards className="mr-2 h-4 w-4" />
+              Sacar
+            </Button>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
         <Landmark className="h-4 w-4" />
         Depositar
-      </Button>
-      <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
-        <WalletCards className="h-4 w-4" />
-        Sacar
       </Button>
 
       <DropdownMenu>
@@ -70,7 +94,7 @@ export function UserNav() {
                 {getInitials(displayName)}
               </AvatarFallback>
             </Avatar>
-            <span>{displayName}</span>
+            <span className="hidden md:inline">{displayName}</span>
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -103,7 +127,10 @@ export function UserNav() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => auth.signOut()} className='text-red-500 focus:text-red-500'>
+          <DropdownMenuItem
+            onClick={() => auth.signOut()}
+            className="text-red-500 focus:text-red-500"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sair</span>
           </DropdownMenuItem>

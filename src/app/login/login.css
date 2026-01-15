@@ -8,27 +8,11 @@
 }
 
 .login-body {
-    background-color: #000;
+    background-color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: radial-gradient(circle at center, #113311 0%, #000 70%); 
-}
-
-/* Overlay do Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    z-index: 1000;
 }
 
 /* Container Principal */

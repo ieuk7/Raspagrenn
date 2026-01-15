@@ -27,6 +27,7 @@ import {
   ArrowRightCircle,
   UserPlus,
 } from 'lucide-react';
+import { ScratchCards } from '@/components/ScratchCards';
 
 const WinnersTicker = () => (
   <>
@@ -253,7 +254,7 @@ const WinnersTicker = () => (
   </>
 );
 
-export default function Home() {
+export default function HomePage() {
   const banners = [
     {
       src: 'https://ik.imagekit.io/cd7ikp5fv/IMG_4617.PNG',
@@ -323,6 +324,7 @@ export default function Home() {
           <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
         </Carousel>
         <WinnersTicker />
+        <ScratchCards />
       </main>
     </div>
   );

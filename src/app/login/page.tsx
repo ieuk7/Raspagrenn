@@ -1,14 +1,44 @@
 'use client';
 import { useState } from 'react';
 import './login.css';
+import { useAuth } from '@/firebase';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const auth = useAuth();
+  const { toast } = useToast();
+
+  const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+        toast({ title: 'Login bem-sucedido!' });
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password);
+        toast({ title: 'Conta criada com sucesso!' });
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Ops! Algo deu errado.',
+        description: error.message,
+      });
+    }
+  };
 
   return (
     <div className="login-body">
       <div className="modal-container">
-        
         <div className="logo-area">
           <img
             src="https://ik.imagekit.io/cd7ikp5fv/raspa-green-logo.png"
@@ -25,7 +55,7 @@ export default function LoginPage() {
               depósitos e muito mais.
             </p>
 
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleAuth}>
               <div className="form-group">
                 <label>Email</label>
                 <div className="input-wrapper">
@@ -44,7 +74,12 @@ export default function LoginPage() {
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                   </div>
-                  <input type="email" placeholder="example@site.com" />
+                  <input
+                    type="email"
+                    placeholder="example@site.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -73,7 +108,12 @@ export default function LoginPage() {
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </div>
-                  <input type="password" placeholder="Insira sua senha..." />
+                  <input
+                    type="password"
+                    placeholder="Insira sua senha..."
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                   <button
                     type="button"
                     className="input-action-right"
@@ -116,7 +156,7 @@ export default function LoginPage() {
             <h2>Crie sua conta!</h2>
             <p className="subtitle">Comece a concorrer a prêmios hoje!</p>
 
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleAuth}>
               <div className="form-group">
                 <label>Email</label>
                 <div className="input-wrapper">
@@ -135,7 +175,12 @@ export default function LoginPage() {
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                   </div>
-                  <input type="email" placeholder="exemplo@gmail.com" />
+                  <input
+                    type="email"
+                    placeholder="exemplo@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -156,7 +201,12 @@ export default function LoginPage() {
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
                   </div>
-                  <input type="tel" placeholder="(00) 0000-0000" />
+                  <input
+                    type="tel"
+                    placeholder="(00) 0000-0000"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -185,8 +235,16 @@ export default function LoginPage() {
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </div>
-                  <input type="password" placeholder="Digite uma senha..." />
-                  <button type="button" className="input-action-right toggle-text">
+                  <input
+                    type="password"
+                    placeholder="Digite uma senha..."
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="input-action-right toggle-text"
+                  >
                     Mostrar
                   </button>
                 </div>

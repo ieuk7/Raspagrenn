@@ -13,14 +13,24 @@ import { Button } from '@/components/ui/button';
 import {
   Gift,
   Home as HomeIcon,
+  LogOut,
   Star,
   UserPlus,
 } from 'lucide-react';
 import { ScratchCards } from '@/components/ScratchCards';
 import { Footer } from '@/components/Footer';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import LoginPage from './login/page';
-
+import { useUser, useAuth } from '@/firebase';
+import { Toaster } from '@/components/ui/toaster';
 
 const WinnersTicker = () => (
   <>
@@ -248,6 +258,8 @@ const WinnersTicker = () => (
 );
 
 export default function HomePage() {
+  const { user } = useUser();
+  const auth = useAuth();
   const banners = [
     {
       src: 'https://ik.imagekit.io/cd7ikp5fv/IMG_4617.PNG',
@@ -295,15 +307,24 @@ export default function HomePage() {
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <DialogTrigger asChild>
-              <Button variant="ghost">Entrar</Button>
-            </DialogTrigger>
-            <DialogTrigger asChild>
-              <Button>
-                <UserPlus className="mr-2 h-4 w-4" />
-                Registrar
+            {user ? (
+              <Button onClick={() => auth.signOut()}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
               </Button>
-            </DialogTrigger>
+            ) : (
+              <>
+                <DialogTrigger asChild>
+                  <Button variant="ghost">Entrar</Button>
+                </DialogTrigger>
+                <DialogTrigger asChild>
+                  <Button>
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Registrar
+                  </Button>
+                </DialogTrigger>
+              </>
+            )}
           </div>
         </header>
         <main className="p-4 md:p-8">
@@ -334,6 +355,7 @@ export default function HomePage() {
           <ScratchCards />
         </main>
         <Footer />
+        <Toaster />
       </div>
       <DialogContent className="p-0 bg-transparent border-none max-w-lg">
         <DialogHeader className="sr-only">
@@ -343,6 +365,7 @@ export default function HomePage() {
           </DialogDescription>
         </DialogHeader>
         <LoginPage />
+        <DialogClose className="close-btn z-[100]">&times;</DialogClose>
       </DialogContent>
     </Dialog>
   );

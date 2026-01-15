@@ -90,7 +90,7 @@
   width: 100%;
   max-width: 1200px; /* Largura máxima da barra */
   height: 80px;
-  background-color: #000; /* Fundo preto */
+  background-color: hsl(var(--background)); /* Fundo preto */
   overflow: hidden; /* Esconde o que sai da tela */
   position: relative;
   border-bottom: 1px solid #222; /* Linha sutil opcional */
@@ -101,7 +101,7 @@
 .live-indicator {
   flex-shrink: 0;
   z-index: 10;
-  background-color: #000; /* Cobre os cards passando por baixo */
+  background-color: hsl(var(--background));
   height: 100%;
   display: flex;
   flex-direction: column;

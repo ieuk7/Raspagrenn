@@ -44,7 +44,7 @@ export function UserNav() {
 
   return (
     <div className="flex items-center gap-4">
-      <Button className="hidden md:flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
+      <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
         R$ 0,00
         <ChevronDown className="h-4 w-4" />
       </Button>

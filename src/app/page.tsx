@@ -365,7 +365,6 @@ export default function HomePage() {
           </DialogDescription>
         </DialogHeader>
         <LoginPage />
-        <DialogClose className="close-btn z-[100]">&times;</DialogClose>
       </DialogContent>
     </Dialog>
   );

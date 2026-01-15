@@ -1,0 +1,235 @@
+
+/* Reset e Fontes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.login-body {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at center, #113311 0%, #000 70%); 
+}
+
+/* Overlay do Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+/* Container Principal */
+.modal-container {
+    background-color: #0f0f0f;
+    /* Degradê verde no final */
+    background-image: linear-gradient(to bottom, #0f0f0f 85%, #0a2e14 100%);
+    width: 100%;
+    max-width: 500px;
+    padding: 40px 40px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    border: 1px solid #222;
+    text-align: center;
+}
+
+/* Botão Fechar (X) */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-btn:hover { color: #fff; }
+
+/* Logo Area */
+.logo-area {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+.logo-area img {
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+
+/* Títulos */
+.modal-container h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+/* Formulário */
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.modal-container label {
+    display: block;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Ícone dentro do input (lado esquerdo) */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.modal-container input {
+    width: 100%;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    /* Padding esquerdo maior para caber o ícone */
+    padding: 14px 15px 14px 45px; 
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-container input:focus {
+    border-color: #22c55e;
+}
+
+.modal-container input::placeholder {
+    color: #555;
+}
+
+/* Ação dentro do input (lado direito - Olho ou Texto "Mostrar") */
+.input-action-right {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Estilo específico para o texto "Mostrar" no registro */
+.toggle-text {
+    color: #22c55e;
+    font-size: 13px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.toggle-text:hover { text-decoration: underline; }
+
+/* Link Esqueci a senha (apenas no login) */
+.forgot-password {
+    display: block;
+    text-align: right;
+    color: #22c55e;
+    font-size: 13px;
+    text-decoration: none;
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+.forgot-password:hover { text-decoration: underline; }
+
+/* Botão Principal */
+.btn-submit {
+    width: 100%;
+    background-color: #00e600;
+    color: #000;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500; /* Sem negrito forte */
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+}
+.btn-submit:hover { background-color: #00c200; }
+
+/* Divisor "OU" */
+.divider {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-size: 13px;
+    margin: 25px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #333;
+}
+.divider::before { margin-right: 15px; }
+.divider::after { margin-left: 15px; }
+
+/* Rodapé de troca de tela */
+.footer-text {
+    color: #ccc;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.footer-link {
+    color: #00e600;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+    cursor: pointer;
+}
+.footer-link:hover { text-decoration: underline; }
+
+/* Utilitário para esconder telas */
+.hidden {
+    display: none;
+}

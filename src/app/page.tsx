@@ -267,7 +267,7 @@ export default function HomePage() {
             height={40}
           />
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="#" className="flex items-center gap-2 hover:text-primary">
+            <Link href="/" className="flex items-center gap-2 hover:text-primary">
               <HomeIcon className="h-4 w-4" />
               Início
             </Link>
@@ -282,11 +282,15 @@ export default function HomePage() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="ghost">Entrar</Button>
-          <Button>
-            <UserPlus className="mr-2 h-4 w-4" />
-            Registrar
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost">Entrar</Button>
+          </Link>
+          <Link href="/login">
+            <Button>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Registrar
+            </Button>
+          </Link>
         </div>
       </header>
       <main className="p-4 md:p-8">

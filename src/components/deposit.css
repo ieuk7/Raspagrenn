@@ -1,0 +1,177 @@
+/* Container do Modal */
+.modal-container-deposit {
+    background-color: #0f0f0f; /* Fundo quase preto */
+    width: 100%;
+    max-width: 450px;
+    border-radius: 12px;
+    overflow: hidden; /* Para a barra superior não sair da borda */
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 255, 0, 0.1);
+    border: 1px solid #1f1f1f;
+}
+
+/* Botão Fechar (X) */
+.close-btn-deposit {
+    position: absolute;
+    top: 15px; /* Ajustei levemente para 15px pois sem a barra ele ficaria muito baixo */
+    right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.close-btn-deposit:hover { opacity: 1; }
+
+/* Imagem do Banner */
+.banner-img-deposit {
+    width: 100%;
+    display: block;
+    height: auto;
+    /* Máscara suave na parte inferior da imagem para mesclar com o fundo preto */
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+/* Corpo do Modal */
+.modal-content-deposit {
+    padding: 10px 25px 30px 25px;
+}
+
+/* Título "Depositar" */
+.modal-title-deposit {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Label "Valor" */
+.input-label-deposit {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Campo de Input */
+.input-wrapper-deposit {
+    background-color: #161616;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+}
+
+.input-wrapper-deposit:focus-within {
+    border-color: #22c55e;
+}
+
+.currency-symbol-deposit {
+    color: #fff;
+    font-weight: 600;
+    margin-right: 5px;
+    font-size: 15px;
+}
+
+.amount-input-deposit {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    font-weight: 500;
+}
+
+/* Grid de Botões de Valor */
+.amount-grid-deposit {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.amount-btn-deposit {
+    background-color: #0a2e14; /* Verde bem escuro */
+    border: 1px solid transparent;
+    color: #22c55e; /* Texto verde */
+    border-radius: 8px;
+    padding: 12px 0;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.amount-btn-deposit:hover {
+    background-color: #0f421d;
+}
+
+/* Botão selecionado/quente */
+.amount-btn-deposit.hot-deposit {
+    border: 1px solid #ffd700; /* Borda amarela */
+    color: #fff;
+}
+
+/* Etiqueta "QUENTE" */
+.badge-hot-deposit {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffd700;
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Botão Gerar QR Code */
+.submit-btn-deposit {
+    width: 100%;
+    background-color: #1aff1a; /* Verde Neon Brilhante */
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.submit-btn-deposit:hover {
+    background-color: #00e600;
+}
+
+.submit-btn-deposit:active {
+    transform: scale(0.98);
+}
+
+/* Ícones SVG */
+.icon-svg-deposit {
+    width: 20px;
+    height: 20px;
+}

@@ -3,6 +3,9 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
@@ -152,6 +155,12 @@ export function UserNav() {
         </DropdownMenu>
       </div>
       <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Depósito</DialogTitle>
+          <DialogDescription>
+            Faça um depósito para adicionar fundos à sua conta.
+          </DialogDescription>
+        </DialogHeader>
         <DepositModal />
       </DialogContent>
     </Dialog>

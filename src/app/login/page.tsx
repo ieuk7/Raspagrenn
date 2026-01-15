@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import './login.css';
-import { DialogClose } from '@/components/ui/dialog';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,8 +8,7 @@ export default function LoginPage() {
   return (
     <div className="login-body">
       <div className="modal-container">
-        <DialogClose className="close-btn">&times;</DialogClose>
-
+        
         <div className="logo-area">
           <img
             src="https://ik.imagekit.io/cd7ikp5fv/raspa-green-logo.png"

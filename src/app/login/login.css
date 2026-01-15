@@ -32,9 +32,9 @@
 
 /* Botão Fechar (X) */
 .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
     background: none;
     border: none;
     color: #888;

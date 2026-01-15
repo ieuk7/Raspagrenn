@@ -343,8 +343,8 @@ export default function HomePage() {
           </DialogDescription>
         </DialogHeader>
         <LoginPage />
-        <DialogClose className="close-btn absolute top-4 right-4 text-white">&times;</DialogClose>
       </DialogContent>
+      <DialogClose className="close-btn z-[100]">&times;</DialogClose>
     </Dialog>
   );
 }

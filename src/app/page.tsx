@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { ScratchCards } from '@/components/ScratchCards';
 import { Footer } from '@/components/Footer';
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import LoginPage from './login/page';
 
 
@@ -336,6 +336,12 @@ export default function HomePage() {
         <Footer />
       </div>
       <DialogContent className="p-0 bg-transparent border-none max-w-lg">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Login ou Registro</DialogTitle>
+          <DialogDescription>
+            Acesse sua conta ou crie uma nova para começar a jogar.
+          </DialogDescription>
+        </DialogHeader>
         <LoginPage />
         <DialogClose className="close-btn absolute top-4 right-4 text-white">&times;</DialogClose>
       </DialogContent>

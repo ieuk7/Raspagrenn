@@ -1,0 +1,256 @@
+/* Container do Modal */
+.modal-container-withdraw {
+    background-color: #000000;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    border: 1px solid #111;
+}
+
+/* Botão Fechar (X) */
+.close-btn-withdraw {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    transition: transform 0.2s;
+}
+.close-btn-withdraw:hover { transform: scale(1.1); }
+
+/* Imagem do Banner */
+.banner-container-withdraw {
+    width: 100%;
+    background-color: #000;
+    position: relative;
+    border-top-left-radius: 12px; /* Arredondamento manual */
+    border-top-right-radius: 12px;
+    overflow: hidden; /* Para mascarar a imagem apenas no topo */
+}
+
+.banner-img-withdraw {
+    width: 100%;
+    display: block;
+    height: auto;
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+/* Corpo do Modal */
+.modal-content-withdraw {
+    padding: 0 25px 30px 25px;
+    margin-top: -15px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Título */
+.modal-title-withdraw {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Labels */
+.input-label-withdraw {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Campo de Valor */
+.input-wrapper-withdraw {
+    background-color: #0a0a0a;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+}
+
+.input-wrapper-withdraw:focus-within {
+    border-color: #22c55e;
+}
+
+.currency-symbol-withdraw {
+    color: #fff;
+    font-weight: 600;
+    margin-right: 5px;
+    font-size: 15px;
+}
+
+.amount-input-withdraw {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    font-weight: 500;
+}
+
+/* Grid de Botões */
+.amount-grid-withdraw {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.amount-btn-withdraw {
+    background-color: #050f05;
+    border: 1px solid transparent;
+    color: #00e600;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.amount-btn-withdraw:hover {
+    background-color: #0a1f0a;
+    border-color: #00e600;
+}
+
+/* --- LOGICA DO SELETOR PIX (Dropdown) --- */
+.pix-group-withdraw {
+    position: relative; /* Necessário para posicionar o dropdown */
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    background-color: #0a0a0a;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.pix-group-withdraw:focus-within {
+    border-color: #22c55e;
+}
+
+.pix-type-selector-withdraw {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 60px;
+    background-color: #111;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+    color: #aaa;
+    transition: background 0.2s;
+}
+
+.pix-type-selector-withdraw:hover { background-color: #222; }
+
+.pix-input-withdraw {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #fff;
+    padding: 12px 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.pix-input-withdraw::placeholder { color: #444; }
+
+/* Dropdown Menu Styles */
+.pix-dropdown-withdraw {
+    position: absolute;
+    top: 100%; /* Logo abaixo do input */
+    left: 0;
+    width: 200px; /* Largura do menu */
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    margin-top: 5px;
+    padding: 5px;
+    z-index: 100;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    display: none; /* Escondido por padrão */
+}
+
+.pix-dropdown-withdraw.show {
+    display: block;
+}
+
+.pix-option-withdraw {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    color: #ccc;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.pix-option-withdraw:hover {
+    background-color: #1f1f1f;
+    color: #fff;
+}
+
+.pix-option-withdraw.selected {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+/* Ícone de check no item selecionado */
+.check-icon-withdraw {
+    margin-left: auto;
+    opacity: 0;
+    width: 14px;
+    height: 14px;
+}
+.pix-option-withdraw.selected .check-icon-withdraw {
+    opacity: 1;
+    color: #aaa; /* Cor cinza suave como na imagem */
+}
+
+
+/* Botão Solicitar */
+.submit-btn-withdraw {
+    width: 100%;
+    background-color: #1aff1a;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn-withdraw:hover {
+    background-color: #00cc00;
+}
+
+/* SVG utilitários */
+.icon-svg-withdraw { width: 20px; height: 20px; }
+.icon-small-withdraw { width: 16px; height: 16px; }

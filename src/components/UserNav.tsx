@@ -34,6 +34,7 @@ import {
   Receipt,
 } from 'lucide-react';
 import { DepositModal } from './DepositModal';
+import { WithdrawModal } from './WithdrawModal';
 
 export function UserNav() {
   const { user } = useUser();
@@ -48,8 +49,7 @@ export function UserNav() {
     user?.displayName || user?.email?.split('@')[0] || 'User';
 
   return (
-    <Dialog>
-      <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
@@ -78,26 +78,63 @@ export function UserNav() {
                 O saldo total é a soma do seu saldo e bônus.
               </p>
             </div>
-            <DropdownMenuItem asChild className="mt-4 p-0 focus:bg-transparent">
-              <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
-                <WalletCards className="mr-2 h-4 w-4" />
-                Sacar
-              </Button>
-            </DropdownMenuItem>
+            <Dialog>
+              <DialogTrigger asChild>
+                 <DropdownMenuItem asChild className="mt-4 p-0 focus:bg-transparent" onSelect={(e) => e.preventDefault()}>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
+                    <WalletCards className="mr-2 h-4 w-4" />
+                    Sacar
+                  </Button>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+                <DialogHeader className="sr-only">
+                    <DialogTitle>Saque</DialogTitle>
+                    <DialogDescription>
+                        Faça um saque da sua conta.
+                    </DialogDescription>
+                </DialogHeader>
+                <WithdrawModal />
+              </DialogContent>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DialogTrigger asChild>
-          <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
-            <Landmark className="h-4 w-4" />
-            Depositar
-          </Button>
-        </DialogTrigger>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
+              <Landmark className="h-4 w-4" />
+              Depositar
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Depósito</DialogTitle>
+              <DialogDescription>
+                Faça um depósito para adicionar fundos à sua conta.
+              </DialogDescription>
+            </DialogHeader>
+            <DepositModal />
+          </DialogContent>
+        </Dialog>
 
-        <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
-          <WalletCards className="h-4 w-4" />
-          Sacar
-        </Button>
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
+                    <WalletCards className="h-4 w-4" />
+                    Sacar
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+               <DialogHeader className="sr-only">
+                  <DialogTitle>Saque</DialogTitle>
+                  <DialogDescription>
+                    Faça um saque da sua conta.
+                  </DialogDescription>
+                </DialogHeader>
+                <WithdrawModal />
+            </DialogContent>
+        </Dialog>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -130,10 +167,23 @@ export function UserNav() {
                 <UserIcon className="mr-2 h-4 w-4" />
                 <span>Conta</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <WalletCards className="mr-2 h-4 w-4" />
-                <span>Sacar</span>
-              </DropdownMenuItem>
+              <Dialog>
+                <DialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <WalletCards className="mr-2 h-4 w-4" />
+                        <span>Sacar</span>
+                    </DropdownMenuItem>
+                </DialogTrigger>
+                 <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Saque</DialogTitle>
+                        <DialogDescription>
+                            Faça um saque da sua conta.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <WithdrawModal />
+                </DialogContent>
+              </Dialog>
               <DropdownMenuItem>
                 <Gamepad2 className="mr-2 h-4 w-4" />
                 <span>Histórico de Jogos</span>
@@ -154,15 +204,5 @@ export function UserNav() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DialogContent className="p-0 bg-transparent border-none max-w-fit">
-        <DialogHeader className="sr-only">
-          <DialogTitle>Depósito</DialogTitle>
-          <DialogDescription>
-            Faça um depósito para adicionar fundos à sua conta.
-          </DialogDescription>
-        </DialogHeader>
-        <DepositModal />
-      </DialogContent>
-    </Dialog>
   );
 }

@@ -51,11 +51,11 @@ export function UserNav() {
 
       <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
         <Landmark className="h-4 w-4" />
-        <span className='hidden md:block'>Depositar</span>
+        Depositar
       </Button>
       <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
         <WalletCards className="h-4 w-4" />
-        <span className='hidden md:block'>Sacar</span>
+        Sacar
       </Button>
 
       <DropdownMenu>
@@ -70,8 +70,8 @@ export function UserNav() {
                 {getInitials(displayName)}
               </AvatarFallback>
             </Avatar>
-            <span className="hidden md:block">{displayName}</span>
-            <ChevronDown className="h-4 w-4 hidden md:block" />
+            <span>{displayName}</span>
+            <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>

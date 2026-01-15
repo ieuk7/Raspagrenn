@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { ScratchCards } from '@/components/ScratchCards';
 import { Footer } from '@/components/Footer';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import LoginPage from './login/page';
 
 
@@ -344,7 +344,6 @@ export default function HomePage() {
         </DialogHeader>
         <LoginPage />
       </DialogContent>
-      <DialogClose className="close-btn z-[100]">&times;</DialogClose>
     </Dialog>
   );
 }

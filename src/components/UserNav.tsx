@@ -23,7 +23,7 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import {
   ChevronDown,
   Landmark,
@@ -36,10 +36,23 @@ import {
 import { DepositModal } from './DepositModal';
 import { WithdrawModal } from './WithdrawModal';
 import Link from 'next/link';
+import { doc } from 'firebase/firestore';
+
+interface UserProfile {
+  balance?: number;
+}
 
 export function UserNav() {
   const { user } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+
+  const { data: userProfile } = useDoc<UserProfile>(userDocRef);
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'S';
@@ -48,20 +61,26 @@ export function UserNav() {
 
   const displayName =
     user?.displayName || user?.email?.split('@')[0] || 'User';
+  
+  const balance = userProfile?.balance ?? 0;
+  const formattedBalance = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(balance);
 
   return (
     <div className="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
-              R$ 0,00
+              {formattedBalance}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 p-4" align="end">
             <div className="space-y-2">
               <div className="flex justify-between items-center text-sm">
-                <span className="font-bold text-primary">R$ 0,00</span>
+                <span className="font-bold text-primary">{formattedBalance}</span>
                 <span className="text-muted-foreground">Saldo</span>
               </div>
               <div className="flex justify-between items-center text-sm">
@@ -73,7 +92,7 @@ export function UserNav() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-foreground">Total</span>
-                <span className="font-bold text-lg text-primary">R$ 0,00</span>
+                <span className="font-bold text-lg text-primary">{formattedBalance}</span>
               </div>
               <p className="text-xs text-muted-foreground">
                 O saldo total é a soma do seu saldo e bônus.

@@ -28,6 +28,7 @@ interface UserProfile {
     username: string;
     phone?: string;
     document?: string;
+    balance?: number;
 }
 
 export default function AccountPage() {
@@ -88,6 +89,8 @@ export default function AccountPage() {
   const username = userProfile?.username || user?.email?.split('@')[0] || '';
   const phone = userProfile?.phone;
   const documentValue = userProfile?.document;
+  const balance = userProfile?.balance ?? 0;
+  const formattedBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance);
 
   return (
     <div className="account-container">
@@ -137,11 +140,11 @@ export default function AccountPage() {
             <div className="stats-grid">
             <div className="stat-card">
                 <div className="stat-card-info">
-                <span className="stat-card-label">Total Depositado</span>
-                <span className="stat-card-value">R$ 0,00</span>
+                <span className="stat-card-label">Saldo em conta</span>
+                <span className="stat-card-value">{formattedBalance}</span>
                 </div>
                 <div className="stat-card-icon">
-                <ArrowDownLeft />
+                <DollarSign />
                 </div>
             </div>
             <div className="stat-card">

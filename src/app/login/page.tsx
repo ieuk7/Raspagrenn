@@ -33,7 +33,8 @@ export default function LoginPage() {
             email: user.email,
             username: user.email?.split('@')[0] || '',
             phone: phone,
-            document: ''
+            document: '',
+            balance: 0,
           });
         }
         toast({ title: 'Conta criada com sucesso!' });

@@ -26,6 +26,10 @@
         "document": {
           "type": "string",
           "description": "The user's document number (e.g., CPF)."
+        },
+        "balance": {
+          "type": "number",
+          "description": "The user's account balance."
         }
       },
       "required": [

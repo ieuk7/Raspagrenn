@@ -13,12 +13,11 @@ export function DepositModal() {
     function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
         let value = e.target.value.replace(/[^0-9]/g, "");
         if (value === "") {
-            setAmount("");
+            setAmount("0,00");
             return;
         }
         const numValue = parseInt(value, 10) / 100;
         
-        // Format to Brazilian currency string
         const formatted = new Intl.NumberFormat('pt-BR', {
             minimumFractionDigits: 2,
         }).format(numValue);
@@ -33,9 +32,7 @@ export function DepositModal() {
                 <button className="close-btn-deposit">&times;</button>
             </DialogClose>
 
-            <div className="banner-container-deposit">
-              <img src="https://influ-danc.b-cdn.net/wp-content/uploads/2024/06/faca-seu-deposito-1024x218.png" alt="Banner Promoção" className="banner-img-deposit" />
-            </div>
+            <img src="https://raspagreen.com/deposit_bg.jpg" alt="Banner Promoção" className="banner-img-deposit" />
 
             <div className="modal-content-deposit">
                 <div className="modal-title-deposit">
@@ -43,15 +40,22 @@ export function DepositModal() {
                         <rect x="2" y="6" width="20" height="12" rx="2"></rect>
                         <circle cx="12" cy="12" r="2"></circle>
                         <path d="M6 12h.01M18 12h.01"></path>
-                        <path d="M12 2v4M12 18v4"></path>
+                        <path d="M12 2v4M12 18v4"></path> 
                     </svg>
                     Depositar
                 </div>
 
-                <label className="input-label-deposit">Valor:</label>
+                <label className="input-label-deposit">Valor do depósito:</label>
                 <div className="input-wrapper-deposit">
                     <span className="currency-symbol-deposit">R$</span>
-                    <input type="text" id="amount-input" className="amount-input-deposit" value={amount} onChange={handleAmountChange}/>
+                    <input 
+                        type="text" 
+                        id="amount-input" 
+                        className="amount-input-deposit" 
+                        value={amount} 
+                        onChange={handleAmountChange} 
+                        inputMode="numeric"
+                    />
                 </div>
 
                 <div className="amount-grid-deposit">
@@ -82,7 +86,7 @@ export function DepositModal() {
                         <rect x="14" y="14" width="7" height="7"></rect>
                         <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
-                    Gerar QR Code
+                    Gerar QR Code PIX
                 </button>
             </div>
         </div>

@@ -61,22 +61,32 @@ export async function generatePix(amount: number, user: { name: string; email: s
             body: JSON.stringify(payload)
         });
 
-        const result: PixData | ParadiseErrorResponse = await response.json();
+        const result: any = await response.json();
 
         if (!response.ok) {
             let errorMessage = 'Ocorreu um erro ao gerar o PIX.';
-            if ('errors' in result && result.errors) {
+            if (result.errors) {
                 errorMessage = Object.values(result.errors).flat().join(' ');
-            } else if ('message' in result && result.message) {
+            } else if (result.message) {
                 errorMessage = result.message;
-            } else if ('error' in result && result.error) {
+            } else if (result.error) {
                 errorMessage = result.error;
             }
             throw new Error(errorMessage);
         }
         
-        if ('pix' in result && result.pix) {
-            return result as PixData;
+        const transaction_data = result.transaction ?? result;
+
+        if (transaction_data && transaction_data.qr_code) {
+             const pixData: PixData = {
+                hash: transaction_data.id,
+                pix: {
+                    pix_qr_code: transaction_data.qr_code,
+                    expiration_date: transaction_data.expires_at,
+                },
+                amount_paid: amountInCents
+            };
+            return pixData;
         } else {
              throw new Error('Resposta da API de pagamento inválida.');
         }

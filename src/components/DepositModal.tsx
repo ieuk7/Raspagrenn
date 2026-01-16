@@ -16,7 +16,7 @@ interface UserProfile {
 }
 
 export function DepositModal() {
-    const [amount, setAmount] = useState('10,00');
+    const [amount, setAmount] = useState('5,00');
     const { user } = useUser();
     const { toast } = useToast();
     const firestore = useFirestore();
@@ -56,8 +56,8 @@ export function DepositModal() {
             return;
         }
         const numericAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
-        if (isNaN(numericAmount) || numericAmount <= 0) {
-            toast({ title: 'Valor de depósito inválido.', variant: 'destructive' });
+        if (isNaN(numericAmount) || numericAmount < 5) {
+            toast({ title: 'O valor mínimo para depósito é R$ 5,00.', variant: 'destructive' });
             return;
         }
 

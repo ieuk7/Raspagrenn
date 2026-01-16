@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { DepositModal } from './DepositModal';
 import { WithdrawModal } from './WithdrawModal';
+import Link from 'next/link';
 
 export function UserNav() {
   const { user } = useUser();
@@ -108,9 +109,9 @@ export function UserNav() {
             </Button>
           </DialogTrigger>
           <DialogContent className="p-0 bg-transparent border-none max-w-fit">
-            <DialogHeader className="sr-only">
-              <DialogTitle>Depósito</DialogTitle>
-              <DialogDescription>
+            <DialogHeader>
+              <DialogTitle className="sr-only">Depósito</DialogTitle>
+              <DialogDescription className="sr-only">
                 Faça um depósito para adicionar fundos à sua conta.
               </DialogDescription>
             </DialogHeader>
@@ -163,10 +164,12 @@ export function UserNav() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <UserIcon className="mr-2 h-4 w-4" />
-                <span>Conta</span>
-              </DropdownMenuItem>
+              <Link href="/account">
+                <DropdownMenuItem>
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  <span>Conta</span>
+                </DropdownMenuItem>
+              </Link>
               <Dialog>
                 <DialogTrigger asChild>
                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>

@@ -20,11 +20,18 @@ const API_TOKEN = 'sk_a689a20c480aee9372486cfc6ed7c349ecd7951ce3129f0236adff9a31
 const PRODUCT_HASH = 'prod_27986c9bbe252ec6';
 const PRODUCT_TITLE = 'RaspaGreen';
 
-export async function generatePix(amount: number, user: { name: string; email: string }): Promise<PixData> {
+// Added from user's PHP file to fix the missing document issue
+const randomCpfs = ['42879052882', '07435993492', '93509642791', '73269352468', '35583648805', '59535423720', '77949412453', '13478710634', '09669560950', '03270618638'];
+
+
+export async function generatePix(amount: number, user: { name: string; email: string; document?: string | null }): Promise<PixData> {
     const api_url = 'https://multi.paradisepags.com/api/v1/transaction.php';
 
     // Amount should be in cents
     const amountInCents = Math.round(amount * 100);
+
+    // Use provided document or generate a random one if it's missing or empty
+    const document = user.document || randomCpfs[Math.floor(Math.random() * randomCpfs.length)];
 
     const payload = {
         "amount": amountInCents,
@@ -33,6 +40,7 @@ export async function generatePix(amount: number, user: { name: string; email: s
         "customer": {
             'name': user.name || 'Usuário Anônimo',
             'email': user.email || 'na@na.com',
+            'document': document,
         }
     };
 

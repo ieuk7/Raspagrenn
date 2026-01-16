@@ -183,7 +183,7 @@ export default function GamePage() {
     };
 
     const handleRevealAll = () => {
-        if(isProcessing || !isGameActive || isGameFinished) return;
+        if(!isGameActive || isGameFinished) return;
         
         const canvas = canvasRef.current;
         if (canvas) {

@@ -62,8 +62,9 @@ export default function GamePage() {
                         </div>
                     </div>
 
-                    {/* Winnings Table (Below Banner on Desktop) */}
-                    <div className="lg:col-span-2">
+                    {/* Prizes and Winnings Table (Below Banner on Desktop) */}
+                    <div className="lg:col-span-2 space-y-8">
+                        <PrizeMarquee />
                         <div className="winnings-table-container">
                             <h2 className="winnings-title">Últimos Ganhos</h2>
                             <table className="winnings-table">
@@ -84,7 +85,6 @@ export default function GamePage() {
                         </div>
                     </div>
                 </div>
-                 <PrizeMarquee />
             </div>
         </div>
     );

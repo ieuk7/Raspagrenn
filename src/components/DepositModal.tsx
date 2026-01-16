@@ -33,7 +33,9 @@ export function DepositModal() {
                 <button className="close-btn-deposit">&times;</button>
             </DialogClose>
 
-            <img src="https://raspagreen.com/deposit_bg.jpg" alt="Banner Promoção" className="banner-img-deposit" />
+            <div className="banner-container-deposit">
+              <img src="https://ik.imagekit.io/cd7ikp5fv/deposit_bg.jpg?updatedAt=1764429272368" alt="Banner Promoção" className="banner-img-deposit" />
+            </div>
 
             <div className="modal-content-deposit">
                 <div className="modal-title-deposit">

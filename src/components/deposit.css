@@ -1,10 +1,9 @@
 /* Container do Modal */
 .modal-container-deposit {
-    background-color: #0f0f0f; /* Fundo quase preto */
-    width: 100%;
-    max-width: 450px;
+    background-color: #0f0f0f;
+    width: 90vw;
+    max-width: 400px; /* Reduced max-width for better mobile fit */
     border-radius: 12px;
-    overflow: hidden; /* Para a barra superior não sair da borda */
     position: relative;
     box-shadow: 0 10px 40px rgba(0, 255, 0, 0.1);
     border: 1px solid #1f1f1f;
@@ -13,32 +12,51 @@
 /* Botão Fechar (X) */
 .close-btn-deposit {
     position: absolute;
-    top: 15px; /* Ajustei levemente para 15px pois sem a barra ele ficaria muito baixo */
+    top: 15px;
     right: 15px;
-    background: none;
-    border: none;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
     z-index: 10;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.2s;
 }
-.close-btn-deposit:hover { opacity: 1; }
+.close-btn-deposit:hover { 
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(1.1);
+}
+
+/* Container do banner para aplicar a máscara */
+.banner-container-deposit {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    overflow: hidden;
+}
 
 /* Imagem do Banner */
 .banner-img-deposit {
     width: 100%;
     display: block;
     height: auto;
-    /* Máscara suave na parte inferior da imagem para mesclar com o fundo preto */
-    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    /* Máscara suave na parte inferior da imagem para mesclar com o fundo */
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 }
 
 /* Corpo do Modal */
 .modal-content-deposit {
-    padding: 10px 25px 30px 25px;
+    padding: 0 25px 30px 25px;
+    margin-top: -20px; /* Sobrepõe a imagem */
+    position: relative;
+    z-index: 2;
 }
 
 /* Título "Depositar" */
@@ -123,6 +141,7 @@
 .amount-btn-deposit.hot-deposit {
     border: 1px solid #ffd700; /* Borda amarela */
     color: #fff;
+    background-color: #0f421d;
 }
 
 /* Etiqueta "QUENTE" */

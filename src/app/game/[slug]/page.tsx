@@ -19,8 +19,10 @@ export default function GamePage() {
     return (
         <div className='bg-background'>
             <WinnersTicker />
-            <div className="game-container">
-                <div className="game-left-column">
+            <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8 lg:items-start">
+                
+                {/* Banner */}
+                <div className="lg:col-span-2">
                     <Image
                         src={game.bannerUrl}
                         alt={`Banner for ${game.title}`}
@@ -28,27 +30,11 @@ export default function GamePage() {
                         height={250}
                         className="game-banner"
                     />
-                    <div className="winnings-table-container">
-                        <h2 className="winnings-title">Últimos Ganhos</h2>
-                        <table className="winnings-table">
-                            <thead>
-                                <tr>
-                                    <th>Valor</th>
-                                    <th>Ação</th>
-                                    <th>Jogo</th>
-                                    <th>Data/Hora</th>
-                                    <th>ID Rodada</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colSpan={6} className='text-center py-8'>Nenhum ganho recente.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-                <div className="game-right-column">
-                <div className="game-interface">
+
+                {/* Game Interface (Right Column on Desktop) */}
+                <div className="lg:row-span-2">
+                    <div className="game-interface min-w-0 md:min-w-[380px]">
                         <div className="scratch-area-container">
                             <p className="text-sm text-white/70 flex items-center justify-center gap-2"><Zap size={14}/> Clique em "comprar e raspar" para iniciar o jogo</p>
                             <div className="my-6">
@@ -71,6 +57,28 @@ export default function GamePage() {
                                 <Repeat size={20} className="mr-2"/> Rodadas Automática
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                {/* Winnings Table (Below Banner on Desktop) */}
+                <div className="lg:col-span-2">
+                    <div className="winnings-table-container">
+                        <h2 className="winnings-title">Últimos Ganhos</h2>
+                        <table className="winnings-table">
+                            <thead>
+                                <tr>
+                                    <th>Valor</th>
+                                    <th>Ação</th>
+                                    <th>Jogo</th>
+                                    <th>Data/Hora</th>
+                                    <th>ID Rodada</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colSpan={6} className='text-center py-8'>Nenhum ganho recente.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

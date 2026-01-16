@@ -7,40 +7,6 @@
     object-fit: cover;
 }
 
-.winnings-table-container {
-    background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
-    padding: 1.5rem;
-}
-
-.winnings-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.winnings-table {
-    width: 100%;
-    text-align: left;
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    border-collapse: collapse;
-}
-
-.winnings-table th {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid hsl(var(--border));
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-}
-
-.winnings-table td {
-    padding: 1rem;
-    color: hsl(var(--foreground));
-}
-
 /* --- New Scratch Card Styles --- */
 
 .scratch-main-wrapper {
@@ -227,5 +193,3 @@
     font-size: 1rem;
     color: #ccc;
 }
-
-    

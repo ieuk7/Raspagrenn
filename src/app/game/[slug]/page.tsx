@@ -469,24 +469,6 @@ export default function GamePage() {
                     
                     <div className="lg:col-span-2 space-y-8">
                         <PrizeMarquee />
-                        <div className="winnings-table-container">
-                            <h2 className="winnings-title">Últimos Ganhos</h2>
-                            <table className="winnings-table">
-                                <thead>
-                                    <tr>
-                                        <th>Valor</th>
-                                        <th>Ação</th>
-                                        <th>Jogo</th>
-                                        <th>Data/Hora</th>
-                                        <th>ID Rodada</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colSpan={6} className='text-center py-8'>Nenhum ganho recente.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>

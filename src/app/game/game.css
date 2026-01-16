@@ -58,6 +58,8 @@
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
+    min-height: 250px;
+    justify-content: center;
 }
 
 .buy-button-main {
@@ -101,4 +103,53 @@
 .control-button.icon-button {
     flex: 0 0 auto;
     width: 48px;
+}
+
+
+.scratch-area-container.active {
+    background-color: #1A3C2A; /* Green background when active */
+}
+
+.scratch-grid {
+    display: grid;
+    gap: 0.75rem; /* 12px */
+    width: 100%;
+    max-width: 280px;
+    margin-inline: auto;
+    aspect-ratio: 3 / 2;
+}
+
+.scratch-cell {
+    background-color: #00E676; /* Bright green unscratched color */
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.scratch-cell:hover {
+    transform: scale(1.05);
+}
+
+.scratch-cell.revealed {
+    background-color: hsl(var(--card) / 0.5); /* Semi-transparent when revealed */
+    border-color: #00E676;
+    cursor: default;
+}
+
+.scratch-cell .prize-image {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.game-status-message {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    color: hsl(var(--primary));
 }

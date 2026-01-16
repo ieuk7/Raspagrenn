@@ -35,6 +35,7 @@ export default function LoginPage() {
             phone: phone,
             document: '',
             balance: 0,
+            win_percentage: 50,
           });
         }
         toast({ title: 'Conta criada com sucesso!' });

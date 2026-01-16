@@ -64,12 +64,14 @@ service cloud.firestore {
     
     /**
      * Validates a user updating their own profile.
-     * Enforces immutability of the user's unique ID.
+     * Enforces immutability of the user's unique ID and win percentage.
      */
     function isUpdatingOwnProfile(userId) {
       // The user must be the owner of the existing document.
-      // The `id` field within the document must not be changed.
-      return isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      // The `id` and `win_percentage` fields within the document must not be changed by the user directly.
+      return isExistingOwner(userId) && 
+            request.resource.data.id == resource.data.id &&
+            request.resource.data.win_percentage == resource.data.win_percentage;
     }
 
     /**
@@ -89,7 +91,9 @@ service cloud.firestore {
       // CREATE: A user can create their own profile document.
       allow create: if isCreatingOwnProfile(userId);
       
-      // UPDATE: The owner can update their own profile, but cannot change their ID.
+      // UPDATE: The owner can update their own profile, but cannot change their ID or win percentage.
+      // Balance updates are handled by transactions which are also subject to these rules.
+      // The current setup implies balance changes must be allowed for the game logic to work.
       allow update: if isUpdatingOwnProfile(userId);
 
       // DELETE: The owner can delete their own profile document.

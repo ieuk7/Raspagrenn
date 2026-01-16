@@ -16,6 +16,7 @@ import {
   Mail,
   Smartphone,
   FileText,
+  Percent,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,7 @@ interface UserProfile {
     phone?: string;
     document?: string;
     balance?: number;
+    win_percentage?: number;
 }
 
 export default function AccountPage() {
@@ -91,6 +93,7 @@ export default function AccountPage() {
   const documentValue = userProfile?.document;
   const balance = userProfile?.balance ?? 0;
   const formattedBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance);
+  const winPercentage = userProfile?.win_percentage ?? 50;
 
   return (
     <div className="account-container">
@@ -158,11 +161,11 @@ export default function AccountPage() {
             </div>
             <div className="stat-card">
                 <div className="stat-card-info">
-                <span className="stat-card-label">Ganho em Cashback</span>
-                <span className="stat-card-value">R$ 0,00</span>
+                <span className="stat-card-label">Chance de Vitória</span>
+                <span className="stat-card-value">{winPercentage}%</span>
                 </div>
                 <div className="stat-card-icon">
-                <DollarSign />
+                <Percent />
                 </div>
             </div>
             </div>
@@ -203,6 +206,15 @@ export default function AccountPage() {
               icon={<FileText size={16} />}
               placeholder="000.000.000-00"
             />
+             <div className="info-item">
+                <div>
+                  <p className="info-item-label">Chance de Vitória</p>
+                  <p className="info-item-value">
+                    <Percent size={16} />
+                    <span>{winPercentage}% (não editável)</span>
+                  </p>
+                </div>
+              </div>
           </div>
         </div>
       </section>

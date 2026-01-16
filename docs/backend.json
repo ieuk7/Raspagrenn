@@ -30,6 +30,10 @@
         "balance": {
           "type": "number",
           "description": "The user's account balance."
+        },
+        "win_percentage": {
+          "type": "number",
+          "description": "The user's win percentage chance, from 1 to 100."
         }
       },
       "required": [

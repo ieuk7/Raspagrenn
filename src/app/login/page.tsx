@@ -9,7 +9,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { doc, setDoc } from 'firebase/firestore';
 
-export default function LoginPage() {
+export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +40,7 @@ export default function LoginPage() {
         }
         toast({ title: 'Conta criada com sucesso!' });
       }
+      onAuthSuccess?.();
     } catch (error: any) {
       console.error(error);
       toast({

@@ -20,12 +20,14 @@ import {
 import LoginPage from '@/app/login/page';
 import { useUser } from '@/firebase';
 import { UserNav } from '@/components/UserNav';
+import { useState } from 'react';
 
 export function Header() {
   const { user, isUserLoading } = useUser();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
-    <Dialog>
+    <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
       <header className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-8">
           <Image
@@ -85,7 +87,7 @@ export function Header() {
             Acesse sua conta ou crie uma nova para começar a jogar.
           </DialogDescription>
         </DialogHeader>
-        <LoginPage />
+        <LoginPage onAuthSuccess={() => setIsLoginOpen(false)} />
       </DialogContent>
     </Dialog>
   );

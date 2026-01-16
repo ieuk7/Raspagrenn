@@ -67,11 +67,13 @@ service cloud.firestore {
      * Enforces immutability of the user's unique ID and win percentage.
      */
     function isUpdatingOwnProfile(userId) {
-      // The user must be the owner of the existing document.
-      // The `id` and `win_percentage` fields within the document must not be changed by the user directly.
-      return isExistingOwner(userId) && 
-            request.resource.data.id == resource.data.id &&
-            request.resource.data.win_percentage == resource.data.win_percentage;
+      // Get the set of keys for fields being changed in the update.
+      let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+      
+      // An update is allowed if the user is the owner of the document,
+      // and they are not trying to change the 'id' or 'win_percentage' fields.
+      return isExistingOwner(userId) &&
+             !changedKeys.hasAny(['id', 'win_percentage']);
     }
 
     /**
@@ -93,7 +95,6 @@ service cloud.firestore {
       
       // UPDATE: The owner can update their own profile, but cannot change their ID or win percentage.
       // Balance updates are handled by transactions which are also subject to these rules.
-      // The current setup implies balance changes must be allowed for the game logic to work.
       allow update: if isUpdatingOwnProfile(userId);
 
       // DELETE: The owner can delete their own profile document.

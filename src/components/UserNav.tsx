@@ -106,6 +106,12 @@ export function UserNav() {
             </button>
           </DialogTrigger>
           <DialogContent data-form="pix">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Depósito</DialogTitle>
+              <DialogDescription>
+                Faça um depósito em sua conta.
+              </DialogDescription>
+            </DialogHeader>
             <DepositModal />
           </DialogContent>
         </Dialog>

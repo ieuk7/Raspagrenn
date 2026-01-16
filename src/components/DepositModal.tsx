@@ -34,7 +34,7 @@ export function DepositModal() {
             </DialogClose>
 
             <div className="banner-container-deposit">
-              <img src="https://ik.imagekit.io/cd7ikp5fv/deposit_bg.jpg?updatedAt=1764429272368" alt="Banner Promoção" className="banner-img-deposit" />
+              <img src="https://influ-danc.b-cdn.net/wp-content/uploads/2024/06/faca-seu-deposito-1024x218.png" alt="Banner Promoção" className="banner-img-deposit" />
             </div>
 
             <div className="modal-content-deposit">

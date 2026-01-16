@@ -42,7 +42,7 @@ export default function AccountPage() {
 
   const displayName = user?.displayName || user?.email?.split('@')[0] || 'Shit Poster';
   const email = user?.email || 'ghkueigamer115@gmail.com';
-  const username = user?.displayName || 'CommodiQuod285';
+  const username = user?.email?.split('@')[0] || 'CommodiQuod285';
 
   return (
     <div className="account-container">

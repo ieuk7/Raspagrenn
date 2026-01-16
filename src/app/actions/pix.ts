@@ -22,9 +22,10 @@ const PRODUCT_TITLE = 'RaspaGreen';
 
 // Added from user's PHP file to fix the missing document issue
 const randomCpfs = ['42879052882', '07435993492', '93509642791', '73269352468', '35583648805', '59535423720', '77949412453', '13478710634', '09669560950', '03270618638'];
+const randomDdds = ['11', '21', '31', '41', '51', '61', '71', '81', '85', '92', '27', '48'];
 
 
-export async function generatePix(amount: number, user: { name: string; email: string; document?: string | null }): Promise<PixData> {
+export async function generatePix(amount: number, user: { name: string; email: string; document?: string | null; phone?: string | null }): Promise<PixData> {
     const api_url = 'https://multi.paradisepags.com/api/v1/transaction.php';
 
     // Amount should be in cents
@@ -32,6 +33,10 @@ export async function generatePix(amount: number, user: { name: string; email: s
 
     // Use provided document or generate a random one if it's missing or empty
     const document = user.document || randomCpfs[Math.floor(Math.random() * randomCpfs.length)];
+
+    // Use provided phone or generate a random one if it's missing or empty
+    const phone = user.phone || (randomDdds[Math.floor(Math.random() * randomDdds.length)] + '9' + Math.floor(10000000 + Math.random() * 90000000).toString());
+
 
     const payload = {
         "amount": amountInCents,
@@ -41,6 +46,7 @@ export async function generatePix(amount: number, user: { name: string; email: s
             'name': user.name || 'Usuário Anônimo',
             'email': user.email || 'na@na.com',
             'document': document,
+            'phone': phone,
         }
     };
 

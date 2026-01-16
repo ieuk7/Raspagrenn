@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 interface UserProfile {
     username?: string;
     document?: string;
+    phone?: string;
 }
 
 export function DepositModal() {
@@ -65,7 +66,8 @@ export function DepositModal() {
             const data = await generatePix(numericAmount, {
                 name: userProfile?.username || user.email!,
                 email: user.email!,
-                document: userProfile?.document
+                document: userProfile?.document,
+                phone: userProfile?.phone
             });
             setPixData(data);
         } catch (error: any) {

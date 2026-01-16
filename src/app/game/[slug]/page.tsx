@@ -375,7 +375,7 @@ export default function GamePage() {
         <div className='bg-background'>
             <WinnersTicker />
             <div className="max-w-7xl mx-auto p-4 md:p-8">
-                <div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8 lg:items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     
                     <div className="lg:col-span-2">
                         <Image
@@ -387,7 +387,7 @@ export default function GamePage() {
                         />
                     </div>
 
-                    <div className="lg:row-span-2">
+                    <div className="lg:col-start-3 lg:row-start-1 lg:row-span-2">
                         <div className="scratch-main-wrapper">
                             <div className="scratch-game-area" id="gameArea" ref={gameAreaRef}>
                                 
@@ -523,5 +523,3 @@ export default function GamePage() {
         </div>
     );
 }
-
-    

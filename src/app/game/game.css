@@ -1,0 +1,126 @@
+.game-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin-inline: auto;
+    align-items: flex-start;
+}
+
+.game-left-column {
+    flex: 2;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.game-banner {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.winnings-table-container {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.winnings-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.winnings-table {
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    border-collapse: collapse;
+}
+
+.winnings-table th {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.winnings-table td {
+    padding: 1rem;
+    color: hsl(var(--foreground));
+}
+
+.game-right-column {
+    flex: 1;
+    min-width: 380px;
+}
+
+.game-interface {
+    background-color: #1A3C2A;
+    border: 2px solid #00E676;
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.scratch-area-container {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.buy-button-main {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 0.75rem 2rem;
+    width: 100%;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+.buy-button-main:hover {
+    background-color: hsl(var(--primary) / 0.9);
+}
+
+.game-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.control-button {
+    flex: 1;
+    background-color: rgba(0,0,0,0.4);
+    color: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.control-button:hover {
+    background-color: rgba(0,0,0,0.6);
+}
+
+.control-button.icon-button {
+    flex: 0 0 auto;
+    width: 48px;
+}

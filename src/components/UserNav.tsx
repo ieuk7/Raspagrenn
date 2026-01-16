@@ -17,12 +17,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import {
   ChevronDown,
@@ -40,6 +34,8 @@ import { doc } from 'firebase/firestore';
 
 interface UserProfile {
   balance?: number;
+  username?: string;
+  email?: string;
 }
 
 export function UserNav() {
@@ -55,12 +51,11 @@ export function UserNav() {
   const { data: userProfile } = useDoc<UserProfile>(userDocRef);
 
   const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'S';
+    if (!name) return 'U';
     return name.substring(0, 1).toUpperCase();
   };
 
-  const displayName =
-    user?.displayName || user?.email?.split('@')[0] || 'User';
+  const displayName = userProfile?.username || user?.displayName || user?.email?.split('@')[0] || 'User';
   
   const balance = userProfile?.balance ?? 0;
   const formattedBalance = new Intl.NumberFormat('pt-BR', {
@@ -69,13 +64,13 @@ export function UserNav() {
   }).format(balance);
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="header-right">
+        {/* Balance Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="flex items-center gap-2 p-2 h-10 bg-zinc-800 hover:bg-zinc-700 text-white">
-              {formattedBalance}
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+            <button className="balance-box">
+                {formattedBalance} <ChevronDown />
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 p-4" align="end">
             <div className="space-y-2">
@@ -98,34 +93,16 @@ export function UserNav() {
                 O saldo total é a soma do seu saldo e bônus.
               </p>
             </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                 <DropdownMenuItem asChild className="mt-4 p-0 focus:bg-transparent" onSelect={(e) => e.preventDefault()}>
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
-                    <WalletCards className="mr-2 h-4 w-4" />
-                    Sacar
-                  </Button>
-                </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent className="p-0 bg-transparent border-none max-w-fit">
-                <DialogHeader className="sr-only">
-                    <DialogTitle>Saque</DialogTitle>
-                    <DialogDescription>
-                        Faça um saque da sua conta.
-                    </DialogDescription>
-                </DialogHeader>
-                <WithdrawModal />
-              </DialogContent>
-            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Deposit Button */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
-              <Landmark className="h-4 w-4" />
-              Depositar
-            </Button>
+            <button className="btn-action btn-deposit">
+                <Landmark />
+                <span className="btn-text">Depositar</span>
+            </button>
           </DialogTrigger>
           <DialogContent className="p-0 bg-transparent border-none max-w-fit">
             <DialogHeader>
@@ -138,12 +115,13 @@ export function UserNav() {
           </DialogContent>
         </Dialog>
 
+        {/* Withdraw Button */}
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-black font-bold flex items-center gap-2">
-                    <WalletCards className="h-4 w-4" />
-                    Sacar
-                </Button>
+                <button className="btn-action btn-withdraw">
+                    <WalletCards />
+                    <span className="btn-text">Sacar</span>
+                </button>
             </DialogTrigger>
             <DialogContent className="p-0 bg-transparent border-none max-w-fit">
                <DialogHeader className="sr-only">
@@ -156,24 +134,17 @@ export function UserNav() {
             </DialogContent>
         </Dialog>
 
+        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-10 w-auto flex items-center justify-start gap-2 p-0 focus-visible:ring-0"
-            >
-              <Avatar className="h-9 w-9">
-                <AvatarImage src={user?.photoURL || ''} alt={displayName} />
-                <AvatarFallback className="bg-purple-600 text-white">
-                  {getInitials(displayName)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden md:inline">{displayName}</span>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+             <button className="user-profile">
+                <div className="avatar-circle">{getInitials(displayName)}</div>
+                <span className="user-name">{displayName}</span>
+                <ChevronDown className="arrow-icon" />
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
+             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{displayName}</p>
                 <p className="text-xs leading-none text-muted-foreground">

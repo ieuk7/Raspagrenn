@@ -21,6 +21,7 @@ import LoginPage from '@/app/login/page';
 import { useUser } from '@/firebase';
 import { UserNav } from '@/components/UserNav';
 import { useState } from 'react';
+import './header.css';
 
 export function Header() {
   const { user, isUserLoading } = useUser();
@@ -28,45 +29,38 @@ export function Header() {
 
   return (
     <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
-      <header className="flex items-center justify-between p-4 border-b border-border">
-        <div className="flex items-center gap-8">
-          <Image
-            src="https://ik.imagekit.io/cd7ikp5fv/raspa-green-logo.png"
-            alt="Raspa Green Logo"
-            width={120}
-            height={40}
-          />
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link
-              href="/"
-              className="flex items-center gap-2 hover:text-primary"
-            >
-              <HomeIcon className="h-4 w-4" />
-              Início
+      <header className="header">
+        <div className="header-left">
+            <Link href="/">
+              <Image
+                src="https://ik.imagekit.io/cd7ikp5fv/raspa-green-logo.png"
+                alt="Raspa Green Logo"
+                width={120}
+                height={40}
+                className="logo-img"
+              />
             </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-2 hover:text-primary"
-            >
-              <Star className="h-4 w-4" />
-              Raspadinhas
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-2 hover:text-primary"
-            >
-              <Gift className="h-4 w-4" />
-              Indique e Ganhe
-            </Link>
-          </nav>
         </div>
-        <div className="flex items-center gap-4">
+
+        <nav className="header-center">
+            <Link href="/" className="nav-item">
+              <HomeIcon /> Inicio
+            </Link>
+            <Link href="#" className="nav-item">
+              <Star /> Raspadinhas
+            </Link>
+            <Link href="#" className="nav-item">
+              <Gift /> Indique e Ganhe
+            </Link>
+        </nav>
+
+        <div className="flex items-center">
            {isUserLoading ? (
-            <div className="h-10 w-24 bg-muted rounded-md animate-pulse" />
+            <div className="h-10 w-64 bg-zinc-800 rounded-md animate-pulse" />
           ) : user ? (
             <UserNav />
           ) : (
-            <>
+            <div className="header-right">
               <DialogTrigger asChild>
                 <Button variant="ghost">Entrar</Button>
               </DialogTrigger>
@@ -76,7 +70,7 @@ export function Header() {
                   Registrar
                 </Button>
               </DialogTrigger>
-            </>
+            </div>
           )}
         </div>
       </header>

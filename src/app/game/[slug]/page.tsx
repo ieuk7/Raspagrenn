@@ -41,6 +41,7 @@ export default function GamePage() {
     const [grid, setGrid] = useState<CellData[]>([]);
     const [gameResult, setGameResult] = useState<{prize: Prize | null, isWin: boolean} | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isGameFinished, setIsGameFinished] = useState(false);
     
     const game = scratchCardsData.find(card => card.slug === slug);
     const cardPrice = game ? parseFloat(game.price.replace('R$ ', '').replace(',', '.')) : 0;
@@ -63,6 +64,7 @@ export default function GamePage() {
         }
         if (isProcessing) return;
 
+        setIsGameFinished(false);
         setIsProcessing(true);
 
         try {
@@ -136,7 +138,7 @@ export default function GamePage() {
     };
 
     const handleRevealAll = () => {
-        if(isProcessing || !isGameActive) return;
+        if(isProcessing || !isGameActive || isGameFinished) return;
         
         const canvas = canvasRef.current;
         if (canvas) {
@@ -147,19 +149,15 @@ export default function GamePage() {
     };
 
     const handleGameEnd = async () => {
-        if (!gameResult || !userDocRef) return;
+        if (!gameResult || !userDocRef || isGameFinished) return;
         
-        if(!isGameActive || isProcessing) return;
+        setIsGameFinished(true);
         
-        setIsProcessing(true); // Prevent multiple runs while finishing up
-        
-        let finalMessage = "Não foi dessa vez! Tente novamente.";
         let toastTitle = "Que pena!";
         let toastDescription = "Mais sorte na próxima vez.";
 
         if (gameResult.isWin && gameResult.prize) {
             const prizeValue = gameResult.prize.value;
-            finalMessage = `Você ganhou R$ ${prizeValue.toFixed(2).replace('.',',')}!`;
             toastTitle = "Parabéns!";
             toastDescription = `Você ganhou R$ ${prizeValue.toFixed(2).replace('.',',')}`;
 
@@ -341,7 +339,23 @@ export default function GamePage() {
                                                 </div>
                                             ))}
                                         </div>
-                                        <canvas id="scratchCanvas" ref={canvasRef}></canvas>
+                                        <canvas id="scratchCanvas" ref={canvasRef} className={cn(isGameFinished && 'opacity-0')}></canvas>
+                                        {isGameFinished && gameResult && (
+                                            <div className="scratch-result-overlay">
+                                                {gameResult.isWin && gameResult.prize ? (
+                                                    <>
+                                                        <h3 className="scratch-result-title">Parabéns!</h3>
+                                                        <p className="scratch-result-prize">Você ganhou R$ {gameResult.prize.value.toFixed(2).replace('.', ',')}</p>
+                                                        <p className="scratch-result-message">O valor foi adicionado ao seu saldo.</p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <h3 className="scratch-result-title">Que pena!</h3>
+                                                        <p className="scratch-result-message">Não foi dessa vez. Tente novamente!</p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -352,7 +366,7 @@ export default function GamePage() {
                                     <span className="scratch-btn-text">Comprar</span>
                                     <span className="scratch-price-tag">{game.price}</span>
                                 </button>
-                                <button className="scratch-btn-turbo" onClick={handleRevealAll} disabled={!isGameActive || isProcessing}>
+                                <button className="scratch-btn-turbo" onClick={handleRevealAll} disabled={!isGameActive || isProcessing || isGameFinished}>
                                     <Zap />
                                 </button>
                                 <button className="scratch-btn-auto" disabled={true}>

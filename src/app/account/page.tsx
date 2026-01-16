@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import './account.css';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser, useAuth, useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking } from '@/firebase';
@@ -30,10 +31,18 @@ interface UserProfile {
 }
 
 export default function AccountPage() {
-  const { user } = useUser();
+  const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
+
+  useEffect(() => {
+    // If auth state is resolved and there's no user, redirect to login page.
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [isUserLoading, user, router]);
+
 
   // Memoize the document reference to prevent re-renders
   const userDocRef = useMemoFirebase(() => {
@@ -57,21 +66,28 @@ export default function AccountPage() {
   };
 
   const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'S';
+    if (!name) return 'U';
     return name.substring(0, 1).toUpperCase();
   };
 
+  // Show a loading indicator while checking auth status or fetching profile
+  // The `user && isProfileLoading` part ensures we wait for profile only if a user is logged in.
+  if (isUserLoading || (user && isProfileLoading)) {
+    return <div className="flex h-screen items-center justify-center">Carregando...</div>;
+  }
+
+  // If there's no user after loading, the component will render nothing
+  // while the useEffect redirects. This prevents showing any data.
+  if (!user) {
+    return null;
+  }
+
   // Use auth data as a fallback while profile is loading
-  const displayName = userProfile?.username || user?.displayName || user?.email?.split('@')[0] || 'Shit Poster';
-  const email = userProfile?.email || user?.email || 'ghkueigamer115@gmail.com';
-  const username = userProfile?.username || user?.email?.split('@')[0] || 'CommodiQuod285';
+  const displayName = userProfile?.username || user?.displayName || user?.email?.split('@')[0] || '';
+  const email = userProfile?.email || user?.email || '';
+  const username = userProfile?.username || user?.email?.split('@')[0] || '';
   const phone = userProfile?.phone;
   const documentValue = userProfile?.document;
-
-  if (isProfileLoading) {
-    // Optional: show a loading state
-    return <div>Carregando...</div>;
-  }
 
   return (
     <div className="account-container">

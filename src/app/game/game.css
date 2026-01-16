@@ -40,116 +40,144 @@
     color: hsl(var(--foreground));
 }
 
-.game-interface {
-    background-color: #1A3C2A;
-    border: 2px solid #00E676;
-    border-radius: 1rem;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+/* --- New Scratch Card Styles --- */
 
-.scratch-area-container {
-    background-color: rgba(0,0,0,0.2);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    min-height: 250px;
-    justify-content: center;
-}
-
-.buy-button-main {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    padding: 0.75rem 2rem;
+.scratch-main-wrapper {
+    background-color: #00aa00;
     width: 100%;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-.buy-button-main:hover {
-    background-color: hsl(var(--primary) / 0.9);
-}
-
-.game-controls {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-}
-
-.control-button {
-    flex: 1;
-    background-color: rgba(0,0,0,0.4);
-    color: white;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-}
-
-.control-button:hover {
-    background-color: rgba(0,0,0,0.6);
-}
-
-.control-button.icon-button {
-    flex: 0 0 auto;
-    width: 48px;
-}
-
-
-.scratch-area-container.active {
-    background-color: #1A3C2A; /* Green background when active */
-}
-
-.scratch-grid {
-    display: grid;
-    gap: 0.75rem; /* 12px */
-    width: 100%;
-    max-width: 280px;
+    max-width: 400px;
+    padding: 15px;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 170, 0, 0.2);
     margin-inline: auto;
-    aspect-ratio: 3 / 2;
 }
 
-.scratch-cell {
-    background-color: #00E676; /* Bright green unscratched color */
-    border-radius: 0.5rem;
+.scratch-game-area {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-radius: 12px;
+    height: 420px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* --- TELA INICIAL --- */
+.scratch-start-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
-    border: 2px solid transparent;
+    z-index: 20;
+    transition: opacity 0.5s;
 }
 
-.scratch-cell:hover {
-    transform: scale(1.05);
+.scratch-bg-text {
+    position: absolute;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.03);
+    text-transform: uppercase;
+    z-index: 1;
+    top: 50%; transform: translateY(-50%); width: 100%; text-align: center;
+    pointer-events: none;
 }
 
-.scratch-cell.revealed {
-    background-color: hsl(var(--card) / 0.5); /* Semi-transparent when revealed */
-    border-color: #00E676;
-    cursor: default;
+.scratch-central-icon-circle {
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 15px;
+    z-index: 2;
+}
+.scratch-central-icon-circle svg { font-size: 40px; color: #fff; }
+
+.scratch-instruction-top { color: #fff; font-weight: 600; margin-bottom: 15px; z-index: 2; }
+
+.scratch-instruction-bottom {
+    color: #666; font-size: 0.9rem; text-align: center;
+    max-width: 80%; margin-top: 40px; z-index: 2;
 }
 
-.scratch-cell .prize-image {
-    width: 60%;
-    height: 60%;
-    object-fit: contain;
+/* --- ÁREA DE JOGO --- */
+.scratch-game-play-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    padding: 15px;
 }
 
-.game-status-message {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    color: hsl(var(--primary));
+/* GRID 3x3 */
+.scratch-prize-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
 }
+
+.scratch-grid-item {
+    background: linear-gradient(145deg, #3a3a3a, #222);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    border: 1px solid #444;
+    gap: 4px;
+}
+.scratch-grid-item i { font-size: 20px; margin-bottom: 4px; color: #ffd700; }
+
+/* CANVAS */
+#scratchCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 15;
+    cursor: crosshair;
+    touch-action: none;
+    transition: opacity 0.5s;
+}
+
+/* --- BOTÕES --- */
+.scratch-btn-buy {
+    background-color: #2ee606;
+    border: none; border-radius: 50px;
+    padding: 4px 6px 4px 15px;
+    display: flex; align-items: center;
+    cursor: pointer; transition: transform 0.1s;
+    box-shadow: 0 4px 10px rgba(46, 230, 6, 0.3);
+    text-decoration: none; z-index: 2;
+}
+.scratch-btn-buy:active { transform: scale(0.95); }
+.scratch-btn-buy:disabled { cursor: not-allowed; opacity: 0.6; }
+.scratch-btn-icon { color: #000; margin-right: 8px; font-size: 1rem; }
+.scratch-btn-text { color: #000; font-weight: 700; font-size: 0.9rem; margin-right: 10px; }
+.scratch-price-tag { background-color: #1a1a1a; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
+
+.scratch-controls-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 15px; gap: 10px;
+}
+.scratch-btn-turbo {
+    background-color: #2ee606; border: none; border-radius: 8px; width: 48px; height: 44px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: #1a1a1a; font-size: 1.2rem;
+}
+.scratch-btn-turbo:disabled { cursor: not-allowed; opacity: 0.6; }
+
+.scratch-btn-auto {
+    background-color: #2a2a2a; border: none; border-radius: 8px; padding: 0 15px; height: 44px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-weight: 600; font-size: 0.9rem; flex-grow: 1;
+}
+.scratch-btn-auto:disabled { cursor: not-allowed; opacity: 0.6; }
+
+
+.scratch-controls-bar .scratch-btn-buy { height: 44px; }
+.scratch-top-hint { position: absolute; top: 15px; width: 100%; text-align: center; color: #666; font-size: 0.75rem; z-index: 5; }
+

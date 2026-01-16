@@ -4,13 +4,13 @@ import { scratchCardsData } from '@/lib/scratch-card-data';
 import Image from 'next/image';
 import { WinnersTicker } from '@/components/WinnersTicker';
 import '../game.css';
-import { Repeat, Zap, Gift } from 'lucide-react';
+import { Repeat, Zap, Gift, Coins, Star, Gem, Frown } from 'lucide-react';
 import { PrizeMarquee } from '@/components/PrizeMarquee';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, runTransaction } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Prize, prizePool, selectRandomPrize, getDummyPrizes } from '@/lib/prizes';
+import { Prize, prizePool, selectRandomPrize } from '@/lib/prizes';
 import { cn } from '@/lib/utils';
 
 
@@ -25,8 +25,7 @@ interface UserProfile {
 }
 
 interface CellData {
-    prize: Prize | null;
-    isRevealed: boolean;
+    prize: Prize;
 }
 
 export default function GamePage() {
@@ -35,21 +34,20 @@ export default function GamePage() {
     const router = useRouter();
     const { toast } = useToast();
 
-    // Firebase hooks
     const { user, isUserLoading } = useUser();
     const firestore = useFirestore();
 
-    // Game state
     const [isGameActive, setIsGameActive] = useState(false);
     const [grid, setGrid] = useState<CellData[]>([]);
     const [gameResult, setGameResult] = useState<{prize: Prize | null, isWin: boolean} | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [message, setMessage] = useState('Clique em "comprar e raspar" para iniciar o jogo');
     
     const game = scratchCardsData.find(card => card.slug === slug);
     const cardPrice = game ? parseFloat(game.price.replace('R$ ', '').replace(',', '.')) : 0;
 
-    // Fetch user profile
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const gameAreaRef = useRef<HTMLDivElement>(null);
+
     const userDocRef = useMemoFirebase(() => {
         if (!user) return null;
         return doc(firestore, 'users', user.uid);
@@ -66,7 +64,6 @@ export default function GamePage() {
         if (isProcessing) return;
 
         setIsProcessing(true);
-        setMessage("Gerando sua cartela...");
 
         try {
             const finalPrize = await runTransaction(firestore, async (transaction) => {
@@ -91,7 +88,6 @@ export default function GamePage() {
             setupGrid(finalPrize);
             setGameResult({ prize: finalPrize, isWin: !!finalPrize });
             setIsGameActive(true);
-            setMessage("Raspe e encontre 3 símbolos iguais!");
 
         } catch (e: any) {
             console.error(e);
@@ -100,70 +96,63 @@ export default function GamePage() {
                 title: 'Erro ao comprar',
                 description: typeof e === 'string' ? e : e.message,
             });
-            setMessage('Clique em "comprar e raspar" para iniciar o jogo');
-        } finally {
             setIsProcessing(false);
         }
     };
     
     const setupGrid = (winningPrize: Prize | null) => {
-        const newGrid: CellData[] = Array(6).fill(null).map(() => ({ prize: null, isRevealed: false }));
+        const newGridPrizes: Prize[] = [];
+        const gridSize = 9;
 
         if (winningPrize) {
-            const winningPrizeWithImage = prizePool.find(p => p.name === winningPrize.name)!;
-            let count = 0;
-            while (count < 3) {
-                const index = Math.floor(Math.random() * 6);
-                if (newGrid[index].prize === null) {
-                    newGrid[index].prize = winningPrizeWithImage;
-                    count++;
-                }
+            for (let i = 0; i < 3; i++) {
+                newGridPrizes.push(winningPrize);
             }
         }
         
-        const dummyPrizes = getDummyPrizes(6, winningPrize || prizePool[0]);
-        let dummyIndex = 0;
-        for (let i = 0; i < 6; i++) {
-            if (newGrid[i].prize === null) {
-                let dummy;
-                do {
-                  dummy = dummyPrizes[dummyIndex++ % dummyPrizes.length];
-                } while (newGrid.filter(c => c.prize?.name === dummy.name).length >= 2);
-                newGrid[i].prize = dummy;
-            }
+        const dummyPrizes: Prize[] = [];
+        const prizeCounts: {[key: string]: number} = {};
+        const filteredPool = prizePool.filter(p => p.name !== winningPrize?.name);
+        
+        while (dummyPrizes.length < (gridSize - newGridPrizes.length)) {
+             const randomIndex = Math.floor(Math.random() * filteredPool.length);
+             const candidate = filteredPool[randomIndex];
+             const currentCount = prizeCounts[candidate.name] || 0;
+
+             if (currentCount < 2) {
+                 dummyPrizes.push(candidate);
+                 prizeCounts[candidate.name] = currentCount + 1;
+             }
         }
 
-        for (let i = newGrid.length - 1; i > 0; i--) {
+        newGridPrizes.push(...dummyPrizes);
+
+        for (let i = newGridPrizes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [newGrid[i], newGrid[j]] = [newGrid[j], newGrid[i]];
+            [newGridPrizes[i], newGridPrizes[j]] = [newGridPrizes[j], newGridPrizes[i]];
         }
         
-        setGrid(newGrid.map(cell => ({ ...cell, isRevealed: false })));
+        setGrid(newGridPrizes.map(prize => ({ prize })));
     };
 
-    const handleRevealCell = (index: number) => {
-        if (isProcessing || !isGameActive || grid[index].isRevealed) return;
-        
-        const newGrid = [...grid];
-        newGrid[index].isRevealed = true;
-        setGrid(newGrid);
-
-        const revealedCount = newGrid.filter(c => c.isRevealed).length;
-        if (revealedCount === 6) {
-            handleGameEnd();
-        }
-    };
-    
     const handleRevealAll = () => {
         if(isProcessing || !isGameActive) return;
-        setGrid(grid.map(cell => ({ ...cell, isRevealed: true })));
-        setTimeout(handleGameEnd, 100); 
+        
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx?.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        setTimeout(() => handleGameEnd(), 500); 
     };
 
     const handleGameEnd = async () => {
-        if (!gameResult || !userDocRef || isProcessing) return;
+        if (!gameResult || !userDocRef) return;
         
-        setIsProcessing(true);
+        if(!isGameActive || isProcessing) return;
+        
+        setIsProcessing(true); // Prevent multiple runs while finishing up
+        
         let finalMessage = "Não foi dessa vez! Tente novamente.";
         let toastTitle = "Que pena!";
         let toastDescription = "Mais sorte na próxima vez.";
@@ -186,16 +175,124 @@ export default function GamePage() {
             }
         }
         
-        setMessage(finalMessage);
         toast({ title: toastTitle, description: toastDescription });
         
         setTimeout(() => {
             setIsGameActive(false);
             setGameResult(null);
-            setMessage('Clique em "comprar e raspar" para iniciar o jogo');
             setIsProcessing(false);
         }, 4000);
     };
+
+    useEffect(() => {
+        if (!isGameActive || !canvasRef.current || !gameAreaRef.current) return;
+
+        const canvas = canvasRef.current;
+        const gameArea = gameAreaRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        let isDrawing = false;
+        
+        const initScratchCard = () => {
+            canvas.width = gameArea.offsetWidth;
+            canvas.height = gameArea.offsetHeight;
+
+            let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#999');
+            gradient.addColorStop(0.5, '#bbb');
+            gradient.addColorStop(1, '#999');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#666";
+            ctx.font = "bold 30px Inter, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("RASPE AQUI", canvas.width/2, canvas.height/2);
+
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 40;
+
+            function scratch(x: number, y: number) {
+                if(!ctx) return;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, ctx.lineWidth / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function checkScratchCompletion() {
+                if(!ctx || !canvas) return;
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+                let transparentPixels = 0;
+
+                for (let i = 3; i < pixels.length; i += 4) {
+                    if (pixels[i] < 128) {
+                        transparentPixels++;
+                    }
+                }
+
+                const totalPixels = pixels.length / 4;
+                const percentage = (transparentPixels / totalPixels) * 100;
+
+                if (percentage > 50) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    setTimeout(() => handleGameEnd(), 500);
+                }
+            }
+
+            const getCoords = (e: MouseEvent | TouchEvent) => {
+                const rect = canvas.getBoundingClientRect();
+                if (e instanceof MouseEvent) {
+                    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+                }
+                const touch = (e as TouchEvent).touches[0];
+                return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+            }
+
+            const onStart = (e: MouseEvent | TouchEvent) => {
+                isDrawing = true;
+                const {x, y} = getCoords(e);
+                scratch(x, y);
+            }
+            const onMove = (e: MouseEvent | TouchEvent) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const {x, y} = getCoords(e);
+                scratch(x, y);
+            }
+            const onEnd = () => {
+                if (isDrawing) {
+                    isDrawing = false;
+                    checkScratchCompletion();
+                }
+            }
+            
+            canvas.addEventListener('mousedown', onStart);
+            canvas.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onEnd);
+            canvas.addEventListener('touchstart', onStart, { passive: false });
+            canvas.addEventListener('touchmove', onMove, { passive: false });
+            window.addEventListener('touchend', onEnd);
+
+            return () => {
+                 canvas.removeEventListener('mousedown', onStart);
+                 canvas.removeEventListener('mousemove', onMove);
+                 window.removeEventListener('mouseup', onEnd);
+                 canvas.removeEventListener('touchstart', onStart);
+                 canvas.removeEventListener('touchmove', onMove);
+                 window.removeEventListener('touchend', onEnd);
+            }
+        }
+        
+        const cleanup = initScratchCard();
+
+        return cleanup;
+
+    }, [isGameActive, grid]);
     
     if (!game) {
         return <div className="text-center p-8">Jogo não encontrado.</div>;
@@ -218,45 +315,49 @@ export default function GamePage() {
                     </div>
 
                     <div className="lg:row-span-2">
-                        <div className="game-interface min-w-0 md:min-w-[380px]">
-                             <div className={cn("scratch-area-container", isGameActive && "active")}>
-                                {isGameActive ? (
-                                     <>
-                                        <p className="text-sm text-white/70 h-5 mb-4">{message}</p>
-                                        <div className="scratch-grid my-2 grid-cols-3 grid-rows-2">
+                        <div className="scratch-main-wrapper">
+                            <div className="scratch-game-area" id="gameArea" ref={gameAreaRef}>
+                                
+                                {!isGameActive ? (
+                                    <div className={cn('scratch-start-screen', isProcessing && 'opacity-50')}>
+                                        <div className="scratch-top-hint"><Zap className='inline-block' size={12}/> {isProcessing ? "Gerando sua cartela..." : `Clique em "comprar" para iniciar`}</div>
+                                        <div className="scratch-bg-text">RASPE AQUI!</div>
+                                        <div className="scratch-central-icon-circle"><Coins size={40} /></div>
+                                        <div className="scratch-instruction-top">Comprar por {game.price}</div>
+                                        <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isProcessing || isUserLoading || isProfileLoading}>
+                                            <Coins className="scratch-btn-icon" size={16} />
+                                            <span className="scratch-btn-text">Comprar</span>
+                                            <span className="scratch-price-tag">{game.price}</span>
+                                        </button>
+                                        <p className="scratch-instruction-bottom" dangerouslySetInnerHTML={{ __html: 'Raspe os 9 quadradinhos, <strong>encontre<br>3 símbolos iguais e ganhe o prêmio!</strong>' }} />
+                                    </div>
+                                ) : (
+                                    <div className="scratch-game-play-screen">
+                                        <div className="scratch-prize-grid">
                                             {grid.map((cell, index) => (
-                                                <div key={index} className={cn("scratch-cell", cell.isRevealed && "revealed")} onClick={() => handleRevealCell(index)}>
-                                                    {cell.isRevealed && cell.prize && (
-                                                        <Image src={cell.prize.imageUrl} alt={cell.prize.name} width={40} height={40} className="prize-image" />
-                                                    )}
+                                                <div key={index} className="scratch-grid-item">
+                                                     <Image src={cell.prize.imageUrl} alt={cell.prize.name} width={25} height={25} style={{objectFit: 'contain'}}/>
+                                                     R$ {cell.prize.value.toFixed(2).replace('.', ',')}
                                                 </div>
                                             ))}
                                         </div>
-                                        <p className="text-center text-white/70 text-xs h-4 mt-2">
-                                             {grid.filter(c => c.isRevealed).length === 6 ? "Jogo finalizado!" : ""}
-                                        </p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p className="text-sm text-white/70 flex items-center justify-center gap-2"><Zap size={14}/> {message}</p>
-                                        <div className="my-6">
-                                            <Gift size={48} className="text-white/80" />
-                                        </div>
-                                        <p className="text-center text-white font-medium">Comprar por {game.price}</p>
-                                    </>
+                                        <canvas id="scratchCanvas" ref={canvasRef}></canvas>
+                                    </div>
                                 )}
                             </div>
 
-                            <div className="game-controls">
-                                 {!isGameActive ? (
-                                    <button className="control-button w-full" onClick={handleBuyAndScratch} disabled={isProcessing || isUserLoading || isProfileLoading}>
-                                        {isProcessing ? "Processando..." : `Comprar e Raspar ${game.price}`}
-                                    </button>
-                                ) : (
-                                    <button className="control-button w-full" onClick={handleRevealAll} disabled={isProcessing}>
-                                        <Zap size={20} className="mr-2"/> Revelar Tudo
-                                    </button>
-                                )}
+                            <div className="scratch-controls-bar">
+                                <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isProcessing || isGameActive || isUserLoading || isProfileLoading}>
+                                    <Coins className="scratch-btn-icon" size={16}/>
+                                    <span className="scratch-btn-text">Comprar</span>
+                                    <span className="scratch-price-tag">{game.price}</span>
+                                </button>
+                                <button className="scratch-btn-turbo" onClick={handleRevealAll} disabled={!isGameActive || isProcessing}>
+                                    <Zap />
+                                </button>
+                                <button className="scratch-btn-auto" disabled={true}>
+                                    <Repeat className="mr-2" /> Auto
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -35,7 +35,7 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
             phone: phone,
             document: '',
             balance: 0,
-            win_percentage: 50,
+            win_percentage: 5,
             referralCode: '',
             commission: 50,
             xp: 0,

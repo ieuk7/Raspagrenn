@@ -4,7 +4,7 @@ import { scratchCardsData } from '@/lib/scratch-card-data';
 import Image from 'next/image';
 import { WinnersTicker } from '@/components/WinnersTicker';
 import '../game.css';
-import { Repeat, Zap, Gift, Coins, Star, Gem, Frown } from 'lucide-react';
+import { Repeat, Zap, Gift, Coins, Star, Gem, Frown, X } from 'lucide-react';
 import { PrizeMarquee } from '@/components/PrizeMarquee';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, runTransaction } from 'firebase/firestore';
@@ -12,6 +12,17 @@ import { useEffect, useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Prize, prizePool, selectRandomPrize } from '@/lib/prizes';
 import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 
 
 interface UserProfile {
@@ -42,6 +53,14 @@ export default function GamePage() {
     const [gameResult, setGameResult] = useState<{prize: Prize | null, isWin: boolean} | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isGameFinished, setIsGameFinished] = useState(false);
+
+    // New states for Turbo and Auto-Play
+    const [isTurboActive, setIsTurboActive] = useState(false);
+    const [isAutoPlay, setIsAutoPlay] = useState(false);
+    const [autoPlayRounds, setAutoPlayRounds] = useState(10);
+    const [roundsPlayed, setRoundsPlayed] = useState(0);
+    const [isAutoPlayDialogOpen, setIsAutoPlayDialogOpen] = useState(false);
+    const [autoPlayInput, setAutoPlayInput] = useState('10');
     
     const game = scratchCardsData.find(card => card.slug === slug);
     const cardPrice = game ? parseFloat(game.price.replace('R$ ', '').replace(',', '.')) : 0;
@@ -56,9 +75,25 @@ export default function GamePage() {
 
     const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
 
+    // --- Autoplay Effect ---
+    useEffect(() => {
+        if (isAutoPlay && !isGameActive && !isProcessing && roundsPlayed < autoPlayRounds) {
+            const timer = setTimeout(() => {
+                handleBuyAndScratch();
+            }, 1000); // 1s delay between rounds
+            return () => clearTimeout(timer);
+        }
+
+        if (isAutoPlay && roundsPlayed >= autoPlayRounds) {
+            setIsAutoPlay(false);
+            toast({ title: 'Jogo automático concluído!' });
+        }
+    }, [isAutoPlay, isGameActive, isProcessing, roundsPlayed, autoPlayRounds]);
+
     const handleBuyAndScratch = async () => {
         if (!user || !userProfile || !userDocRef) {
             toast({ variant: 'destructive', title: 'Você precisa estar logado para jogar!' });
+            if (isAutoPlay) setIsAutoPlay(false);
             router.push('/login');
             return;
         }
@@ -66,6 +101,9 @@ export default function GamePage() {
 
         setIsGameFinished(false);
         setIsProcessing(true);
+        if (isAutoPlay) {
+            setRoundsPlayed(prev => prev + 1);
+        }
 
         try {
             const finalPrize = await runTransaction(firestore, async (transaction) => {
@@ -91,6 +129,10 @@ export default function GamePage() {
             setGameResult({ prize: finalPrize, isWin: !!finalPrize });
             setIsGameActive(true);
 
+            if (isTurboActive || isAutoPlay) {
+                setTimeout(() => handleRevealAll(), 100);
+            }
+
         } catch (e: any) {
             console.error(e);
             toast({
@@ -98,7 +140,10 @@ export default function GamePage() {
                 title: 'Erro ao comprar',
                 description: typeof e === 'string' ? e : e.message,
             });
-            setIsProcessing(false);
+            if (isAutoPlay) {
+                setIsAutoPlay(false);
+            }
+            setIsProcessing(false); // Reset on error to allow retry
         }
     };
     
@@ -180,6 +225,36 @@ export default function GamePage() {
             setGameResult(null);
             setIsProcessing(false);
         }, 4000);
+    };
+
+    const handleTurboClick = () => {
+        if (isGameActive && !isGameFinished) {
+            handleRevealAll();
+        } else if (!isGameActive) {
+            setIsTurboActive(!isTurboActive);
+        }
+    };
+
+    const handleAutoPlayToggle = () => {
+        if (isAutoPlay) {
+            setIsAutoPlay(false);
+            setRoundsPlayed(0);
+            toast({ title: 'Jogo automático parado.' });
+        } else {
+            setIsAutoPlayDialogOpen(true);
+        }
+    };
+    
+    const handleStartAutoPlay = () => {
+        const rounds = parseInt(autoPlayInput, 10);
+        if (rounds > 0 && rounds <= 100) { // Add a reasonable limit
+            setAutoPlayRounds(rounds);
+            setRoundsPlayed(0);
+            setIsAutoPlay(true);
+            setIsAutoPlayDialogOpen(false);
+        } else {
+            toast({ variant: 'destructive', title: 'Número de rodadas inválido.', description: 'Por favor, insira um número entre 1 e 100.' });
+        }
     };
 
     useEffect(() => {
@@ -322,7 +397,7 @@ export default function GamePage() {
                                         <div className="scratch-bg-text">RASPE AQUI!</div>
                                         <div className="scratch-central-icon-circle"><Coins size={40} /></div>
                                         <div className="scratch-instruction-top">Comprar por {game.price}</div>
-                                        <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isProcessing || isUserLoading || isProfileLoading}>
+                                        <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isProcessing || isUserLoading || isProfileLoading || isAutoPlay}>
                                             <Coins className="scratch-btn-icon" size={16} />
                                             <span className="scratch-btn-text">Comprar</span>
                                             <span className="scratch-price-tag">{game.price}</span>
@@ -361,16 +436,32 @@ export default function GamePage() {
                             </div>
 
                             <div className="scratch-controls-bar">
-                                <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isProcessing || isGameActive || isUserLoading || isProfileLoading}>
+                                <button className="scratch-btn-buy" onClick={handleBuyAndScratch} disabled={isAutoPlay || isProcessing || isGameActive || isUserLoading || isProfileLoading}>
                                     <Coins className="scratch-btn-icon" size={16}/>
                                     <span className="scratch-btn-text">Comprar</span>
                                     <span className="scratch-price-tag">{game.price}</span>
                                 </button>
-                                <button className="scratch-btn-turbo" onClick={handleRevealAll} disabled={!isGameActive || isProcessing || isGameFinished}>
+                                <button
+                                    className={cn("scratch-btn-turbo", isTurboActive && !isGameActive && "turbo-active")}
+                                    onClick={handleTurboClick}
+                                    disabled={isAutoPlay || isProcessing || (isGameActive && isGameFinished)}
+                                >
                                     <Zap />
                                 </button>
-                                <button className="scratch-btn-auto" disabled={true}>
-                                    <Repeat className="mr-2" /> Auto
+                                <button
+                                    className="scratch-btn-auto"
+                                    disabled={!isAutoPlay && (isGameActive || isProcessing)}
+                                    onClick={handleAutoPlayToggle}
+                                >
+                                    {isAutoPlay ? (
+                                        <>
+                                            <X className="mr-2" /> Parar ({roundsPlayed}/{autoPlayRounds})
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Repeat className="mr-2" /> Auto
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -399,6 +490,38 @@ export default function GamePage() {
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isAutoPlayDialogOpen} onOpenChange={setIsAutoPlayDialogOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                    <DialogTitle>Jogo Automático</DialogTitle>
+                    <DialogDescription>
+                        Defina quantas rodadas você quer jogar. O jogo irá parar se o seu saldo acabar ou você clicar em parar.
+                    </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="rounds" className="text-right">
+                        Rodadas
+                        </Label>
+                        <Input
+                        id="rounds"
+                        value={autoPlayInput}
+                        onChange={(e) => setAutoPlayInput(e.target.value)}
+                        type="number"
+                        className="col-span-3"
+                        placeholder="Ex: 10"
+                        />
+                    </div>
+                    </div>
+                    <DialogFooter>
+                    <Button onClick={handleStartAutoPlay}>Iniciar Jogo Automático</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </div>
     );
 }
+
+    

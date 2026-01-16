@@ -1,0 +1,172 @@
+.referral-container {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.profile-card,
+.referral-card {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+/* Profile Card */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    background-color: #f97316; /* orange-500 */
+    color: white;
+}
+
+.profile-email {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.profile-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: hsl(var(--secondary));
+    color: #3b82f6; /* Aprox blue-500 from image */
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.commission-info {
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 0.5rem;
+}
+
+.xp-progress {
+    width: 100%;
+    height: 8px;
+    margin-bottom: 0.5rem;
+}
+.xp-progress > div {
+    background-color: hsl(var(--primary));
+}
+
+.xp-details {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 1.5rem;
+}
+
+.levels-button {
+    width: 100%;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+.levels-button:hover {
+    background-color: hsl(var(--primary) / 0.9);
+}
+
+/* Referral Card */
+.referral-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.referral-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.code-creation-box {
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.code-creation-box label {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.code-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    color: hsl(var(--muted-foreground));
+}
+.code-input-wrapper input {
+    flex: 1;
+    min-width: 0;
+}
+
+.create-code-button {
+     background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    align-self: flex-start;
+}
+.create-code-button:hover {
+    background-color: hsl(var(--primary) / 0.9);
+}
+
+.referral-link-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+}
+
+.referral-link-box p {
+    color: hsl(var(--muted-foreground));
+    font-family: monospace;
+    word-break: break-all;
+}
+.referral-link-box button {
+    color: hsl(var(--muted-foreground));
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.referral-link-box button:hover {
+    color: hsl(var(--foreground));
+}
+.referral-link-box button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .referral-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+}

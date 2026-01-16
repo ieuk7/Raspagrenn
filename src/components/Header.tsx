@@ -49,7 +49,7 @@ export function Header() {
             <Link href="#" className="nav-item">
               <Star /> Raspadinhas
             </Link>
-            <Link href="#" className="nav-item">
+            <Link href="/referral" className="nav-item">
               <Gift /> Indique e Ganhe
             </Link>
         </nav>

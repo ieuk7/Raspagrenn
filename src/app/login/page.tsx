@@ -36,6 +36,10 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
             document: '',
             balance: 0,
             win_percentage: 50,
+            referralCode: '',
+            commission: 50,
+            xp: 0,
+            level: 1,
           });
         }
         toast({ title: 'Conta criada com sucesso!' });

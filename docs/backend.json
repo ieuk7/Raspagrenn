@@ -34,6 +34,22 @@
         "win_percentage": {
           "type": "number",
           "description": "The user's win percentage chance, from 1 to 100."
+        },
+        "referralCode": {
+          "type": "string",
+          "description": "The user's unique referral code."
+        },
+        "commission": {
+          "type": "number",
+          "description": "The user's referral commission percentage."
+        },
+        "xp": {
+          "type": "number",
+          "description": "The user's experience points."
+        },
+        "level": {
+          "type": "number",
+          "description": "The user's current level."
         }
       },
       "required": [

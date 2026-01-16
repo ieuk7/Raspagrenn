@@ -64,16 +64,26 @@ service cloud.firestore {
     
     /**
      * Validates a user updating their own profile.
-     * Enforces immutability of the user's unique ID and win percentage.
+     * Enforces immutability of protected fields.
      */
     function isUpdatingOwnProfile(userId) {
-      // Get the set of keys for fields being changed in the update.
       let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+      let protectedKeys = ['id', 'win_percentage', 'commission', 'xp', 'level'];
+
+      // Check if they are trying to change the referral code
+      if (changedKeys.has('referralCode')) {
+        // They can only change it if the existing one is empty
+        if (resource.data.referralCode != '') {
+          return false; // Not allowed to change existing referral code
+        }
+        // If they are allowed to change it, remove it from the list of changed keys to check against other protected fields
+        changedKeys = changedKeys.removeAll(['referralCode']);
+      }
       
-      // An update is allowed if the user is the owner of the document,
-      // and they are not trying to change the 'id' or 'win_percentage' fields.
-      return isExistingOwner(userId) &&
-             !changedKeys.hasAny(['id', 'win_percentage']);
+      // Check that no other protected keys are being changed
+      let isChangingProtectedKeys = changedKeys.hasAny(protectedKeys);
+
+      return isExistingOwner(userId) && !isChangingProtectedKeys;
     }
 
     /**
@@ -93,8 +103,7 @@ service cloud.firestore {
       // CREATE: A user can create their own profile document.
       allow create: if isCreatingOwnProfile(userId);
       
-      // UPDATE: The owner can update their own profile, but cannot change their ID or win percentage.
-      // Balance updates are handled by transactions which are also subject to these rules.
+      // UPDATE: The owner can update their own profile, but cannot change protected fields.
       allow update: if isUpdatingOwnProfile(userId);
 
       // DELETE: The owner can delete their own profile document.

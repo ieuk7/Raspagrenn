@@ -1,12 +1,13 @@
 'use client';
 import { useState } from 'react';
 import './login.css';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const auth = useAuth();
+  const firestore = useFirestore();
   const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,7 +25,17 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(auth, email, password);
         toast({ title: 'Login bem-sucedido!' });
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        if (userCredential.user) {
+          const user = userCredential.user;
+          await setDoc(doc(firestore, 'users', user.uid), {
+            id: user.uid,
+            email: user.email,
+            username: user.email?.split('@')[0] || '',
+            phone: phone,
+            document: ''
+          });
+        }
         toast({ title: 'Conta criada com sucesso!' });
       }
     } catch (error: any) {

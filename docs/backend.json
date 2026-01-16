@@ -18,6 +18,14 @@
           "type": "string",
           "description": "The email address of the user.",
           "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The user's phone number."
+        },
+        "document": {
+          "type": "string",
+          "description": "The user's document number (e.g., CPF)."
         }
       },
       "required": [

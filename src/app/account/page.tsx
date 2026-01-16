@@ -1,13 +1,9 @@
 'use client';
 
 import './account.css';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { useUser, useAuth } from '@/firebase';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useUser, useAuth, useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import {
   User as UserIcon,
   BookCopy,
@@ -16,18 +12,37 @@ import {
   DollarSign,
   ArrowUpRight,
   ArrowDownLeft,
-  Pencil,
   Mail,
   Smartphone,
   FileText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { EditInfoDialog } from '@/components/EditInfoDialog';
+
+// Define the user profile structure
+interface UserProfile {
+    id: string;
+    email: string;
+    username: string;
+    phone?: string;
+    document?: string;
+}
 
 export default function AccountPage() {
   const { user } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
+
+  // Memoize the document reference to prevent re-renders
+  const userDocRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+
+  // Fetch the user profile from Firestore
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
 
   const handleSignOut = () => {
     auth.signOut().then(() => {
@@ -35,14 +50,28 @@ export default function AccountPage() {
     });
   };
 
+  const handleSave = async (field: string, value: string) => {
+    if (!userDocRef) return;
+    // We use setDoc with merge: true to create or update the document.
+    setDocumentNonBlocking(userDocRef, { [field]: value }, { merge: true });
+  };
+
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'S';
     return name.substring(0, 1).toUpperCase();
   };
 
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Shit Poster';
-  const email = user?.email || 'ghkueigamer115@gmail.com';
-  const username = user?.email?.split('@')[0] || 'CommodiQuod285';
+  // Use auth data as a fallback while profile is loading
+  const displayName = userProfile?.username || user?.displayName || user?.email?.split('@')[0] || 'Shit Poster';
+  const email = userProfile?.email || user?.email || 'ghkueigamer115@gmail.com';
+  const username = userProfile?.username || user?.email?.split('@')[0] || 'CommodiQuod285';
+  const phone = userProfile?.phone;
+  const documentValue = userProfile?.document;
+
+  if (isProfileLoading) {
+    // Optional: show a loading state
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div className="account-container">
@@ -123,58 +152,38 @@ export default function AccountPage() {
         <div className="personal-info">
           <h2 className="personal-info-header">Informações Pessoais</h2>
           <div>
-            <div className="info-item">
-              <div>
-                <p className="info-item-label">Email</p>
-                <p className="info-item-value">
-                  <Mail size={16} />
-                  <span>{email}</span>
-                </p>
-              </div>
-              <Button className="edit-button">
-                <Pencil size={14} />
-                Editar
-              </Button>
-            </div>
-            <div className="info-item">
-              <div>
-                <p className="info-item-label">Username</p>
-                <p className="info-item-value">
-                  <UserIcon size={16} />
-                  <span>{username}</span>
-                </p>
-              </div>
-              <Button className="edit-button">
-                <Pencil size={14} />
-                Editar
-              </Button>
-            </div>
-            <div className="info-item">
-              <div>
-                <p className="info-item-label">Telefone</p>
-                <p className="info-item-value">
-                  <Smartphone size={16} />
-                  <span>(00) 0000-0000</span>
-                </p>
-              </div>
-              <Button className="edit-button">
-                <Pencil size={14} />
-                Editar
-              </Button>
-            </div>
-            <div className="info-item">
-              <div>
-                <p className="info-item-label">Documento</p>
-                <p className="info-item-value">
-                  <FileText size={16} />
-                  <span>000.000.000-00</span>
-                </p>
-              </div>
-              <Button className="edit-button">
-                <Pencil size={14} />
-                Editar
-              </Button>
-            </div>
+            <EditInfoDialog
+              fieldLabel="Email"
+              fieldId="email"
+              currentValue={email}
+              onSave={handleSave}
+              icon={<Mail size={16} />}
+              placeholder="seu@email.com"
+            />
+             <EditInfoDialog
+              fieldLabel="Username"
+              fieldId="username"
+              currentValue={username}
+              onSave={handleSave}
+              icon={<UserIcon size={16} />}
+              placeholder="Seu nome de usuário"
+            />
+            <EditInfoDialog
+              fieldLabel="Telefone"
+              fieldId="phone"
+              currentValue={phone || ''}
+              onSave={handleSave}
+              icon={<Smartphone size={16} />}
+              placeholder="(00) 00000-0000"
+            />
+            <EditInfoDialog
+              fieldLabel="Documento"
+              fieldId="document"
+              currentValue={documentValue || ''}
+              onSave={handleSave}
+              icon={<FileText size={16} />}
+              placeholder="000.000.000-00"
+            />
           </div>
         </div>
       </section>

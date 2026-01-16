@@ -104,7 +104,7 @@ export function UserNav() {
                 <span className="btn-text">Depositar</span>
             </button>
           </DialogTrigger>
-          <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+          <DialogContent className="p-0 bg-transparent border-none">
             <DialogHeader>
               <DialogTitle className="sr-only">Depósito</DialogTitle>
               <DialogDescription className="sr-only">
@@ -123,7 +123,7 @@ export function UserNav() {
                     <span className="btn-text">Sacar</span>
                 </button>
             </DialogTrigger>
-            <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+            <DialogContent className="p-0 bg-transparent border-none">
                <DialogHeader className="sr-only">
                   <DialogTitle>Saque</DialogTitle>
                   <DialogDescription>
@@ -167,7 +167,7 @@ export function UserNav() {
                         <span>Sacar</span>
                     </DropdownMenuItem>
                 </DialogTrigger>
-                 <DialogContent className="p-0 bg-transparent border-none max-w-fit">
+                 <DialogContent className="p-0 bg-transparent border-none">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Saque</DialogTitle>
                         <DialogDescription>

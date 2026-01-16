@@ -2,6 +2,7 @@
 .modal-container-deposit {
     background-color: #0f0f0f;
     width: 100%;
+    max-width: 450px;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
@@ -167,6 +168,8 @@
 
 .submit-btn-deposit:hover { background-color: #00e600; }
 .submit-btn-deposit:active { transform: scale(0.98); }
+.submit-btn-deposit:disabled { background-color: #1aff1a; opacity: 0.7; cursor: not-allowed; }
+
 
 .icon-svg-deposit { width: 20px; height: 20px; }
 

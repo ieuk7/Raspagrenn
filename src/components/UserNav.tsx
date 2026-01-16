@@ -26,11 +26,14 @@ import {
   User as UserIcon,
   Gamepad2,
   Receipt,
+  Wallet,
 } from 'lucide-react';
 import { DepositModal } from './DepositModal';
 import { WithdrawModal } from './WithdrawModal';
 import Link from 'next/link';
 import { doc } from 'firebase/firestore';
+import './header.css';
+
 
 interface UserProfile {
   balance?: number;
@@ -64,12 +67,11 @@ export function UserNav() {
   }).format(balance);
 
   return (
-    <div className="header-right">
-        {/* Balance Dropdown */}
+      <div className="header-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="balance-box">
-                {formattedBalance} <ChevronDown />
+             <button className="balance-box">
+                {formattedBalance} <ChevronDown size={14} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 p-4" align="end">
@@ -96,26 +98,18 @@ export function UserNav() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Deposit Button */}
         <Dialog>
           <DialogTrigger asChild>
             <button className="btn-action btn-deposit">
-                <Landmark />
+                <Wallet />
                 <span className="btn-text">Depositar</span>
             </button>
           </DialogTrigger>
-          <DialogContent className="p-0 bg-transparent border-none">
-            <DialogHeader>
-              <DialogTitle className="sr-only">Depósito</DialogTitle>
-              <DialogDescription className="sr-only">
-                Faça um depósito para adicionar fundos à sua conta.
-              </DialogDescription>
-            </DialogHeader>
+          <DialogContent data-form="pix">
             <DepositModal />
           </DialogContent>
         </Dialog>
-
-        {/* Withdraw Button */}
+        
         <Dialog>
             <DialogTrigger asChild>
                 <button className="btn-action btn-withdraw">
@@ -134,7 +128,6 @@ export function UserNav() {
             </DialogContent>
         </Dialog>
 
-        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
              <button className="user-profile">

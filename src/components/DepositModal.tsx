@@ -2,9 +2,32 @@
 import { useState } from 'react';
 import './deposit.css';
 import { DialogClose } from '@/components/ui/dialog';
+import { useUser, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { generatePix } from '@/app/actions/pix';
+import { PixPaymentModal, PixData } from './PixPaymentModal';
+import { Loader2 } from 'lucide-react';
+
+interface UserProfile {
+    username?: string;
+}
 
 export function DepositModal() {
     const [amount, setAmount] = useState('10,00');
+    const { user } = useUser();
+    const { toast } = useToast();
+    const firestore = useFirestore();
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [pixData, setPixData] = useState<PixData | null>(null);
+
+    const userDocRef = useMemoFirebase(() => {
+        if (!user) return null;
+        return doc(firestore, 'users', user.uid);
+    }, [user, firestore]);
+
+    const { data: userProfile } = useDoc<UserProfile>(userDocRef);
 
     function selectAmount(value: string) {
         setAmount(value);
@@ -23,6 +46,41 @@ export function DepositModal() {
         }).format(numValue);
         
         setAmount(formatted);
+    }
+    
+    const handleGeneratePix = async () => {
+        if (!user) {
+            toast({ title: 'Você precisa estar logado para depositar.', variant: 'destructive' });
+            return;
+        }
+        const numericAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
+        if (isNaN(numericAmount) || numericAmount <= 0) {
+            toast({ title: 'Valor de depósito inválido.', variant: 'destructive' });
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const data = await generatePix(numericAmount, {
+                name: userProfile?.username || user.email!,
+                email: user.email!
+            });
+            setPixData(data);
+        } catch (error: any) {
+            toast({ title: 'Erro ao gerar PIX', description: error.message, variant: 'destructive' });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    if (pixData) {
+        return (
+            <PixPaymentModal
+                pixData={pixData}
+                onClose={() => setPixData(null)}
+            />
+        )
     }
 
     return (
@@ -79,13 +137,15 @@ export function DepositModal() {
                     </button>
                 </div>
 
-                <button className="submit-btn-deposit">
-                    <svg className="icon-svg-deposit" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
+                <button className="submit-btn-deposit" onClick={handleGeneratePix} disabled={isLoading}>
+                    {isLoading ? <Loader2 className="animate-spin icon-svg-deposit" /> : (
+                        <svg className="icon-svg-deposit" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    )}
                     Gerar QR Code PIX
                 </button>
             </div>

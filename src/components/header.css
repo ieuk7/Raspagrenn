@@ -17,10 +17,7 @@
 
 /* Centro: Menu de Navegação */
 .header-center {
-    display: flex;
-    gap: 30px;
-    margin-left: 40px;
-    flex-grow: 1;
+    display: flex; gap: 30px; margin-left: 40px; flex-grow: 1;
 }
 .nav-item {
     color: #ffffff; text-decoration: none; font-size: 0.95rem; font-weight: 500;
@@ -39,7 +36,7 @@
     border-radius: 6px; font-weight: 700; font-size: 0.9rem;
     display: flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid #333;
 }
-.balance-box > svg { font-size: 0.7rem; color: #aaa; width: 14px; height: 14px; }
+.balance-box > svg { color: #aaa; }
 
 /* Botões de Ação (Depositar/Sacar) */
 .btn-action {
@@ -49,7 +46,7 @@
     transition: filter 0.2s; white-space: nowrap;
 }
 .btn-action:hover { filter: brightness(0.9); }
-.btn-action > svg { width: 16px; height: 16px; }
+.btn-action > svg { width: 20px; height: 20px; }
 
 
 /* Perfil do Usuário */
@@ -65,7 +62,7 @@
     font-weight: 600; font-size: 1rem;
 }
 .user-name { font-size: 0.9rem; font-weight: 500; }
-.arrow-icon { font-size: 0.7rem; color: #aaa; margin-left: 5px; width: 14px; height: 14px; }
+.arrow-icon { color: #aaa; margin-left: 5px; width: 14px; height: 14px; }
 
 
 /* --- MEDIA QUERY: COMPORTAMENTO MOBILE (CELULAR) --- */
@@ -90,7 +87,7 @@
         justify-content: center;
         border-radius: 8px;
     }
-    .btn-deposit > svg { margin: 0; font-size: 1.1rem; width: 20px; height: 20px; }
+    .btn-deposit > svg { margin: 0; }
 
     /* 4. Perfil: Ocultar Nome */
     .user-name { display: none; }

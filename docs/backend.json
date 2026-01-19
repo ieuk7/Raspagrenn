@@ -50,6 +50,18 @@
         "level": {
           "type": "number",
           "description": "The user's current level."
+        },
+        "referredBy": {
+          "type": "string",
+          "description": "The UID of the user who referred this user."
+        },
+        "totalCommission": {
+          "type": "number",
+          "description": "The total commission earned by this user from their referrals."
+        },
+        "referralsCount": {
+          "type": "number",
+          "description": "The number of users referred by this user."
         }
       },
       "required": [
@@ -57,6 +69,18 @@
         "username",
         "email"
       ]
+    },
+    "ReferralCode": {
+      "title": "Referral Code",
+      "description": "Maps a unique referral code to its owner's user ID.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns this referral code."
+        }
+      },
+      "required": ["userId"]
     }
   },
   "auth": {
@@ -81,6 +105,16 @@
               "description": "The unique identifier of the user, matching the Firebase Auth UID."
             }
           ]
+        }
+      },
+      {
+        "path": "/referralCodes/{code}",
+        "definition": {
+          "entityName": "ReferralCode",
+          "schema": {
+            "$ref": "#/backend/entities/ReferralCode"
+          },
+          "description": "Stores unique referral codes and their owner's UID to ensure uniqueness and enable lookups."
         }
       }
     ],

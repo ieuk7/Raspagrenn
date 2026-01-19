@@ -2,17 +2,18 @@
 
 import { useState } from 'react';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { doc } from 'firebase/firestore';
+import { doc, runTransaction, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Gem, Upload } from 'lucide-react';
+import { Gem, Upload, Users, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import './referral.css';
+import { cn } from '@/lib/utils';
+
 
 interface UserProfile {
     id: string;
@@ -22,6 +23,8 @@ interface UserProfile {
     commission?: number;
     xp?: number;
     level?: number;
+    totalCommission?: number;
+    referralsCount?: number;
 }
 
 export default function ReferralPage() {
@@ -31,6 +34,7 @@ export default function ReferralPage() {
     const { toast } = useToast();
 
     const [newCode, setNewCode] = useState('');
+    const [isCreating, setIsCreating] = useState(false);
     
     useEffect(() => {
         if (!isUserLoading && !user) {
@@ -46,7 +50,7 @@ export default function ReferralPage() {
     const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
 
     const handleCreateCode = async () => {
-        if (!userDocRef || !newCode.trim()) {
+        if (!userDocRef || !newCode.trim() || !user) {
             toast({ title: "Código inválido", description: "Por favor, insira um código.", variant: "destructive" });
             return;
         }
@@ -55,23 +59,40 @@ export default function ReferralPage() {
             return;
         }
 
-        // Basic validation for the code (e.g., length, characters)
-        if (newCode.length < 3 || !/^[a-zA-Z0-9]+$/.test(newCode)) {
-             toast({ title: "Código inválido", description: "O código deve ter pelo menos 3 caracteres e conter apenas letras e números.", variant: "destructive" });
+        const code = newCode.trim().toLowerCase();
+
+        if (code.length < 3 || !/^[a-z0-9]+$/.test(code)) {
+             toast({ title: "Código inválido", description: "O código deve ter pelo menos 3 caracteres e conter apenas letras minúsculas e números.", variant: "destructive" });
             return;
         }
 
+        setIsCreating(true);
+
         try {
-            setDocumentNonBlocking(userDocRef, { referralCode: newCode.trim() }, { merge: true });
+            const referralCodeRef = doc(firestore, 'referralCodes', code);
+
+            await runTransaction(firestore, async (transaction) => {
+                const referralCodeDoc = await transaction.get(referralCodeRef);
+                if (referralCodeDoc.exists()) {
+                    throw new Error("Este código já está em uso. Tente outro.");
+                }
+
+                transaction.set(referralCodeRef, { userId: user.uid });
+                transaction.update(userDocRef, { referralCode: code });
+            });
+
             toast({ title: "Código criado com sucesso!" });
+            setNewCode('');
         } catch (error: any) {
             toast({ title: "Erro ao criar código", description: error.message, variant: "destructive" });
+        } finally {
+            setIsCreating(false);
         }
     };
     
     const handleCopyToClipboard = () => {
         if (userProfile?.referralCode) {
-            const link = `https://raspagreen.com/r/${userProfile.referralCode}`;
+            const link = `${window.location.origin}/r/${userProfile.referralCode}`;
             navigator.clipboard.writeText(link);
             toast({ title: "Link copiado para a área de transferência!" });
         }
@@ -90,7 +111,9 @@ export default function ReferralPage() {
         return null;
     }
     
-    const referralLink = userProfile.referralCode ? `https://raspagreen.com/r/${userProfile.referralCode}` : `https://raspagreen.com/r/`;
+    const referralLink = userProfile.referralCode ? `${window.location.origin}/r/${userProfile.referralCode}` : `${window.location.origin}/r/`;
+
+    const formattedTotalCommission = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(userProfile.totalCommission || 0);
 
     return (
         <div className="referral-container">
@@ -113,32 +136,54 @@ export default function ReferralPage() {
                 <Button className="levels-button">Ver níveis</Button>
             </div>
             
-            <div className="referral-card">
-                <h2 className="referral-title">Link de referência</h2>
-                <div className="code-creation-box">
-                    <label>Seu Código</label>
-                    <div className="code-input-wrapper">
-                        <span>r/</span>
-                        {userProfile.referralCode ? (
-                            <p className='text-lg font-medium'>{userProfile.referralCode}</p>
-                        ) : (
-                           <Input 
-                                value={newCode}
-                                onChange={(e) => setNewCode(e.target.value)}
-                                placeholder="crie-seu-codigo" 
-                           />
-                        )}
-                        
+            <div className="referral-main-content">
+                 <div className="stats-card-grid">
+                    <div className="referral-stat-card">
+                        <Wallet size={24} className="stat-icon" />
+                        <div>
+                            <p className="stat-label">Ganhos de Comissão</p>
+                            <p className="stat-value">{formattedTotalCommission}</p>
+                        </div>
                     </div>
-                     {!userProfile.referralCode && (
-                        <Button className="create-code-button" onClick={handleCreateCode}>Criar Código</Button>
-                     )}
+                     <div className="referral-stat-card">
+                        <Users size={24} className="stat-icon" />
+                        <div>
+                            <p className="stat-label">Total de Indicados</p>
+                            <p className="stat-value">{userProfile.referralsCount || 0}</p>
+                        </div>
+                    </div>
                 </div>
-                <div className="referral-link-box">
-                    <p>{referralLink}</p>
-                    <button onClick={handleCopyToClipboard} disabled={!userProfile.referralCode}>
-                        <Upload size={20} />
-                    </button>
+
+                <div className="referral-card">
+                    <h2 className="referral-title">Link de referência</h2>
+                    <div className="code-creation-box">
+                        <label>Seu Código</label>
+                        <div className="code-input-wrapper">
+                            <span>r/</span>
+                            {userProfile.referralCode ? (
+                                <p className='text-lg font-medium'>{userProfile.referralCode}</p>
+                            ) : (
+                            <Input 
+                                    value={newCode}
+                                    onChange={(e) => setNewCode(e.target.value)}
+                                    placeholder="crie-seu-codigo" 
+                                    disabled={isCreating}
+                            />
+                            )}
+                            
+                        </div>
+                        {!userProfile.referralCode && (
+                            <Button className="create-code-button" onClick={handleCreateCode} disabled={isCreating}>
+                                {isCreating ? 'Criando...' : 'Criar Código'}
+                            </Button>
+                        )}
+                    </div>
+                    <div className={cn("referral-link-box", !userProfile.referralCode && "opacity-50")}>
+                        <p>{referralLink}</p>
+                        <button onClick={handleCopyToClipboard} disabled={!userProfile.referralCode}>
+                            <Upload size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

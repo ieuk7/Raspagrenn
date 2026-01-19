@@ -11,10 +11,12 @@
  * - User Enumeration is Disabled: Listing the entire `/users` collection is explicitly forbidden
  *   to protect user privacy and prevent scraping of user data.
  * - Strict Ownership: All read and write operations on a user's document are restricted
- *   to the authenticated user who owns that document.
+ *   to the authenticated user who owns that document, with exceptions for referral mechanics.
  * - Self-Creation: Authenticated users are permitted to create their own user profile document,
  *   a necessary step for new user onboarding flows.
  * - Default Deny: Any access that is not explicitly granted is denied.
+ * - Referral System: Added rules to support a referral system, including unique code creation
+ *   and commission payouts. These rules are simplified for a prototyping environment.
  *
  * Denormalization for Authorization: The authorization model relies entirely on the document path
  * (`/users/{userId}`) matching the authenticated user's UID. This is the most efficient
@@ -68,7 +70,8 @@ service cloud.firestore {
      */
     function isUpdatingOwnProfile(userId) {
       let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
-      let protectedKeys = ['id', 'win_percentage', 'commission', 'xp', 'level'];
+      // Only the user's ID is immutable. Other fields can be updated by referral logic or user actions.
+      let protectedKeys = ['id'];
 
       // Check if they are trying to change the referral code
       if (changedKeys.has('referralCode')) {
@@ -103,11 +106,35 @@ service cloud.firestore {
       // CREATE: A user can create their own profile document.
       allow create: if isCreatingOwnProfile(userId);
       
-      // UPDATE: The owner can update their own profile, but cannot change protected fields.
-      allow update: if isUpdatingOwnProfile(userId);
+      // UPDATE: Allow owner to update their profile OR allow a referred user to update their referrer's data.
+      // WARNING: This second condition is simplified for prototyping. A production environment should use
+      // Cloud Functions for secure, server-authoritative updates.
+      allow update: if isUpdatingOwnProfile(userId) || 
+                       (isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.referredBy == userId);
 
       // DELETE: The owner can delete their own profile document.
       allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Enforces uniqueness for referral codes.
+     * @path /referralCodes/{code}
+     * @allow Anyone can read to check for existence before creating a new code.
+     * @allow A user can create a code only if it doesn't already exist.
+     * @deny Updates and deletes are not allowed to make codes permanent.
+     */
+    match /referralCodes/{code} {
+      // Allow anyone to read, needed by client to check if a code exists.
+      allow get: if true;
+
+      // Allow creation only if user is signed in, document doesn't exist yet, 
+      // and the doc is being created with the creator's own user ID.
+      allow create: if isSignedIn() && 
+                       !exists(/databases/$(database)/documents/referralCodes/$(code)) && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Do not allow updates or deletes to make codes permanent.
+      allow update, delete: if false;
     }
   }
 }

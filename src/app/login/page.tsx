@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './login.css';
 import { useAuth, useFirestore } from '@/firebase';
 import {
@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDocs, query, where, collection, runTransaction, increment } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +18,8 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const router = useRouter();
+
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,11 +27,15 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
         toast({ title: 'Login bem-sucedido!' });
+        router.push('/account');
+
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         if (userCredential.user) {
           const user = userCredential.user;
-          await setDoc(doc(firestore, 'users', user.uid), {
+          const referralCode = sessionStorage.getItem('referralCode');
+
+          const newUserDocData: any = {
             id: user.uid,
             email: user.email,
             username: user.email?.split('@')[0] || '',
@@ -40,17 +47,59 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
             commission: 50,
             xp: 0,
             level: 1,
-          });
+            referredBy: '',
+            totalCommission: 0,
+            referralsCount: 0,
+          };
+
+          if (referralCode) {
+            await runTransaction(firestore, async (transaction) => {
+              const referralCodesRef = collection(firestore, 'referralCodes');
+              const q = query(referralCodesRef, where('__name__', '==', referralCode));
+              const querySnapshot = await getDocs(q);
+
+              if (!querySnapshot.empty) {
+                const referrerDoc = querySnapshot.docs[0];
+                const referrerId = referrerDoc.data().userId;
+
+                if (referrerId) {
+                  newUserDocData.referredBy = referrerId;
+                  const referrerUserRef = doc(firestore, 'users', referrerId);
+                  transaction.update(referrerUserRef, {
+                    referralsCount: increment(1)
+                  });
+                }
+              } else {
+                 console.warn(`Referral code "${referralCode}" not found.`);
+              }
+               const newUserRef = doc(firestore, 'users', user.uid);
+               transaction.set(newUserRef, newUserDocData);
+            });
+            sessionStorage.removeItem('referralCode');
+          } else {
+            await setDoc(doc(firestore, 'users', user.uid), newUserDocData);
+          }
         }
         toast({ title: 'Conta criada com sucesso!' });
+        router.push('/account');
       }
       onAuthSuccess?.();
+
     } catch (error: any) {
       console.error(error);
+      let friendlyMessage = 'Ocorreu um erro. Tente novamente.';
+      if (error.code === 'auth/email-already-in-use') {
+        friendlyMessage = 'Este e-mail já está em uso. Tente fazer login.';
+      } else if (error.code === 'auth/wrong-password') {
+        friendlyMessage = 'Senha incorreta. Por favor, tente novamente.';
+      } else if (error.code === 'auth/user-not-found') {
+        friendlyMessage = 'Nenhuma conta encontrada com este e-mail. Por favor, registre-se.';
+      }
+
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado.',
-        description: error.message,
+        description: friendlyMessage,
       });
     }
   };
@@ -98,6 +147,7 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
                     placeholder="example@site.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -132,6 +182,7 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
                     placeholder="Insira sua senha..."
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                   <button
                     type="button"
@@ -199,6 +250,7 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
                     placeholder="exemplo@gmail.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -259,6 +311,8 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
                     placeholder="Digite uma senha..."
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
                   />
                   <button
                     type="button"

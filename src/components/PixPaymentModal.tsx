@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useToast } from '@/hooks/use-toast';
 import { checkPixStatus } from '@/app/actions/pix';
-import { doc, runTransaction } from 'firebase/firestore';
+import { doc, runTransaction, getDoc, increment } from 'firebase/firestore';
 import { useFirestore, useUser } from '@/firebase';
 import './pix-payment-modal.css';
 import { Copy, CheckCircle, AlertTriangle, X } from 'lucide-react';
@@ -16,6 +16,10 @@ export interface PixData {
         expiration_date: string;
     };
     amount_paid: number;
+}
+
+interface UserProfile {
+    referredBy?: string;
 }
 
 interface PixQRCodeModalProps {
@@ -51,20 +55,38 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                     setStatus('paid');
                     clearInterval(interval);
 
+                    // Transaction to credit the depositor's balance
                     await runTransaction(firestore, async (transaction) => {
                         const userDoc = await transaction.get(userDocRef);
                         if (!userDoc.exists()) throw "User not found.";
-                        const currentBalance = userDoc.data().balance ?? 0;
-                        transaction.update(userDocRef, { balance: currentBalance + amount });
+                        transaction.update(userDocRef, { balance: increment(amount) });
                     });
 
                     toast({ title: 'Pagamento aprovado!', description: `O valor de ${formattedAmount} foi adicionado ao seu saldo.` });
                     
+                    // After crediting the user, check for a referrer and pay commission
+                    const userDocSnapshot = await getDoc(userDocRef);
+                    const userData = userDocSnapshot.data() as UserProfile;
+
+                    if (userData.referredBy) {
+                        const referrerRef = doc(firestore, 'users', userData.referredBy);
+                        const commissionAmount = amount * 0.50; // 50% commission
+
+                        // Transaction to pay the referrer
+                        await runTransaction(firestore, async (transaction) => {
+                            transaction.update(referrerRef, {
+                                balance: increment(commissionAmount),
+                                totalCommission: increment(commissionAmount)
+                            });
+                        });
+                         toast({ title: 'Comissão Paga!', description: `Uma comissão foi enviada para quem te indicou.` });
+                    }
+
                     // Keep success message for a bit before closing
                     setTimeout(onClose, 4000); 
                 }
             } catch (error: any) {
-                console.error("Payment check failed:", error);
+                console.error("Payment check/commission failed:", error);
                 // Optionally set an error state here if polling fails multiple times
             }
         }, 5000); // Poll every 5 seconds

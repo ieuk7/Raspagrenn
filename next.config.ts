@@ -39,6 +39,18 @@ const nextConfig: NextConfig = {
         hostname: 'influ-danc.b-cdn.net',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pt.pngtree.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'png.pngtree.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

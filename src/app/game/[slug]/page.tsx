@@ -7,7 +7,7 @@ import '../game.css';
 import { Repeat, Zap, Gift, Coins, Star, Gem, Frown, X } from 'lucide-react';
 import { PrizeMarquee } from '@/components/PrizeMarquee';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, runTransaction } from 'firebase/firestore';
+import { doc, runTransaction, increment } from 'firebase/firestore';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Prize, selectRandomPrize, getPrizePoolBySlug } from '@/lib/prizes';
@@ -32,6 +32,9 @@ interface UserProfile {
     phone?: string;
     document?: string;
     balance?: number;
+    bonus_balance?: number;
+    bonus_rollover_requirement?: number;
+    bonus_rollover_progress?: number;
     win_percentage?: number;
 }
 
@@ -107,24 +110,68 @@ export default function GamePage() {
         }
 
         try {
-            const finalPrize = await runTransaction(firestore, async (transaction) => {
+            const { finalPrize, convertedBonus } = await runTransaction(firestore, async (transaction) => {
                 const userDoc = await transaction.get(userDocRef);
-                if (!userDoc.exists()) {
-                    throw "Usuário não encontrado.";
-                }
+                if (!userDoc.exists()) throw "Usuário não encontrado.";
 
-                const currentBalance = userDoc.data().balance ?? 0;
-                if (currentBalance < cardPrice) {
+                const userData = userDoc.data();
+                let currentBalance = userData.balance ?? 0;
+                let currentBonusBalance = userData.bonus_balance ?? 0;
+
+                if ((currentBalance + currentBonusBalance) < cardPrice) {
                     throw "Saldo insuficiente.";
                 }
 
-                transaction.update(userDocRef, { balance: currentBalance - cardPrice });
+                // Deduct from balances
+                let spentFromBonus = 0;
+                let priceToPay = cardPrice;
+                
+                if (currentBalance >= priceToPay) {
+                    currentBalance -= priceToPay;
+                } else {
+                    priceToPay -= currentBalance;
+                    currentBalance = 0;
+                    currentBonusBalance -= priceToPay;
+                    spentFromBonus = priceToPay;
+                }
+                
+                let updates: any = {
+                    balance: currentBalance,
+                    bonus_balance: currentBonusBalance,
+                };
 
-                const winPercentage = userDoc.data().win_percentage ?? 50;
+                let convertedBonus = 0;
+
+                // Handle rollover
+                if (spentFromBonus > 0 && (userData.bonus_rollover_requirement ?? 0) > 0) {
+                    const newProgress = (userData.bonus_rollover_progress ?? 0) + spentFromBonus;
+                    
+                    if (newProgress >= userData.bonus_rollover_requirement) {
+                        // Rollover complete! Convert remaining bonus to main balance.
+                        convertedBonus = currentBonusBalance; // The amount left after this purchase.
+                        updates.balance = currentBalance + convertedBonus;
+                        updates.bonus_balance = 0;
+                        updates.bonus_rollover_progress = 0;
+                        updates.bonus_rollover_requirement = 0;
+                    } else {
+                        updates.bonus_rollover_progress = newProgress;
+                    }
+                }
+
+                transaction.update(userDocRef, updates);
+
+                const winPercentage = userData.win_percentage ?? 50;
                 const prizeWon = selectRandomPrize(winPercentage, prizePool);
 
-                return prizeWon;
+                return { finalPrize: prizeWon, convertedBonus };
             });
+
+            if (convertedBonus > 0) {
+                toast({
+                    title: "Bônus Convertido!",
+                    description: `Você completou os requisitos e ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(convertedBonus)} foram convertidos para seu saldo principal.`
+                });
+            }
             
             setupGrid(finalPrize, prizePool);
             setGameResult({ prize: finalPrize, isWin: !!finalPrize });
@@ -208,11 +255,9 @@ export default function GamePage() {
             toastDescription = `Você ganhou R$ ${prizeValue.toFixed(2).replace('.',',')}`;
 
             try {
+                // Winnings always go to the main balance
                 await runTransaction(firestore, async (transaction) => {
-                    const userDoc = await transaction.get(userDocRef);
-                    if (!userDoc.exists()) throw "Usuário não encontrado.";
-                    const currentBalance = userDoc.data().balance ?? 0;
-                    transaction.update(userDocRef, { balance: currentBalance + prizeValue });
+                    transaction.update(userDocRef, { balance: increment(prizeValue) });
                 });
             } catch (e: any) {
                 toast({ variant: 'destructive', title: 'Erro ao creditar prêmio', description: e.message });

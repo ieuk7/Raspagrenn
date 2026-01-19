@@ -31,6 +31,18 @@
           "type": "number",
           "description": "The user's account balance."
         },
+        "bonus_balance": {
+          "type": "number",
+          "description": "The user's bonus balance."
+        },
+        "bonus_rollover_requirement": {
+          "type": "number",
+          "description": "The total amount the user needs to wager to convert the bonus balance."
+        },
+        "bonus_rollover_progress": {
+          "type": "number",
+          "description": "The current amount wagered towards the bonus rollover."
+        },
         "win_percentage": {
           "type": "number",
           "description": "The user's win percentage chance, from 1 to 100."

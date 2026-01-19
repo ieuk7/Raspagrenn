@@ -38,6 +38,7 @@ import './header.css';
 
 interface UserProfile {
   balance?: number;
+  bonus_balance?: number;
   username?: string;
   email?: string;
 }
@@ -62,17 +63,20 @@ export function UserNav() {
   const displayName = userProfile?.username || user?.displayName || user?.email?.split('@')[0] || 'User';
   
   const balance = userProfile?.balance ?? 0;
-  const formattedBalance = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(balance);
+  const bonusBalance = userProfile?.bonus_balance ?? 0;
+  const totalBalance = balance + bonusBalance;
+
+  const formattedBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance);
+  const formattedBonusBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusBalance);
+  const formattedTotalBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalBalance);
+
 
   return (
       <div className="header-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
              <button className="balance-box">
-                {formattedBalance} <ChevronDown size={14} />
+                {formattedTotalBalance} <ChevronDown size={14} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 p-4" align="end">
@@ -82,7 +86,7 @@ export function UserNav() {
                 <span className="text-muted-foreground">Saldo</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="font-bold text-primary">R$ 0,00</span>
+                <span className="font-bold text-primary">{formattedBonusBalance}</span>
                 <span className="text-muted-foreground">Bônus</span>
               </div>
             </div>
@@ -90,7 +94,7 @@ export function UserNav() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-foreground">Total</span>
-                <span className="font-bold text-lg text-primary">{formattedBalance}</span>
+                <span className="font-bold text-lg text-primary">{formattedTotalBalance}</span>
               </div>
               <p className="text-xs text-muted-foreground">
                 O saldo total é a soma do seu saldo e bônus.

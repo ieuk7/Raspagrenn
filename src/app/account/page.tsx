@@ -15,10 +15,12 @@ import {
   Mail,
   Smartphone,
   FileText,
+  Gift,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { EditInfoDialog } from '@/components/EditInfoDialog';
+import { Progress } from '@/components/ui/progress';
 
 // Define the user profile structure
 interface UserProfile {
@@ -28,6 +30,9 @@ interface UserProfile {
     phone?: string;
     document?: string;
     balance?: number;
+    bonus_balance?: number;
+    bonus_rollover_requirement?: number;
+    bonus_rollover_progress?: number;
 }
 
 const formatPhoneForDisplay = (phoneStr: string | undefined | null) => {
@@ -102,7 +107,12 @@ export default function AccountPage() {
   const phone = userProfile?.phone;
   const documentValue = userProfile?.document;
   const balance = userProfile?.balance ?? 0;
+  const bonusBalance = userProfile?.bonus_balance ?? 0;
+  const rolloverRequirement = userProfile?.bonus_rollover_requirement ?? 0;
+  const rolloverProgress = userProfile?.bonus_rollover_progress ?? 0;
+
   const formattedBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance);
+  const formattedBonusBalance = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusBalance);
 
   return (
     <div className="account-container">
@@ -161,6 +171,15 @@ export default function AccountPage() {
             </div>
             <div className="stat-card">
                 <div className="stat-card-info">
+                <span className="stat-card-label">Saldo de Bônus</span>
+                <span className="stat-card-value">{formattedBonusBalance}</span>
+                </div>
+                <div className="stat-card-icon">
+                <Gift />
+                </div>
+            </div>
+            <div className="stat-card">
+                <div className="stat-card-info">
                 <span className="stat-card-label">Total Retirado</span>
                 <span className="stat-card-value">R$ 0,00</span>
                 </div>
@@ -170,6 +189,22 @@ export default function AccountPage() {
             </div>
             </div>
         </div>
+        
+        {rolloverRequirement > 0 && (
+            <div className="personal-info">
+                <h2 className="personal-info-header">Progresso do Bônus</h2>
+                <p className="text-sm text-muted-foreground mb-2">
+                    Para converter seu saldo de bônus em saldo real, você precisa apostar um total de {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(rolloverRequirement)}.
+                </p>
+                <Progress value={(rolloverProgress / rolloverRequirement) * 100} className="w-full" />
+                <div className="flex justify-between text-sm mt-2">
+                    <span className="text-muted-foreground">Progresso</span>
+                    <span>
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(rolloverProgress)} / {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(rolloverRequirement)}
+                    </span>
+                </div>
+            </div>
+        )}
 
         <div className="personal-info">
           <h2 className="personal-info-header">Informações Pessoais</h2>

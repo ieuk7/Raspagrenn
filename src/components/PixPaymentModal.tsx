@@ -21,6 +21,10 @@ export interface PixData {
 interface UserProfile {
     referredBy?: string;
     depositCount?: number;
+    balance?: number;
+    bonus_balance?: number;
+    bonus_rollover_requirement?: number;
+    bonus_rollover_progress?: number;
 }
 
 interface PixQRCodeModalProps {
@@ -56,10 +60,8 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                     setStatus('paid');
                     clearInterval(interval);
 
-                    let bonusAmount = 0;
-                    let isFirstDeposit = false;
+                    let bonusAwarded = 0;
 
-                    // Transaction to credit the depositor's balance and check for first deposit
                     await runTransaction(firestore, async (transaction) => {
                         const userDoc = await transaction.get(userDocRef);
                         if (!userDoc.exists()) {
@@ -67,28 +69,33 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                         }
                         
                         const userData = userDoc.data();
-                        // Check if it's the first deposit
-                        if (!userData.depositCount || userData.depositCount === 0) {
-                            isFirstDeposit = true;
-                            bonusAmount = amount * 2; // 200% bonus
+                        const depositCount = userData.depositCount ?? 0;
+                        
+                        if (depositCount === 0) {
+                            bonusAwarded = amount * 2; // 200% bonus
                         }
 
-                        const totalAmountToCredit = amount + bonusAmount;
-                        
-                        transaction.update(userDocRef, { 
-                            balance: increment(totalAmountToCredit),
-                            depositCount: increment(1) // Always increment deposit count
-                        });
+                        const updateData: any = {
+                            balance: increment(amount), // Real money deposit
+                            bonus_balance: increment(bonusAwarded),
+                            depositCount: increment(1)
+                        };
+
+                        if (bonusAwarded > 0) {
+                            updateData.bonus_rollover_requirement = (userData.bonus_rollover_requirement || 0) + (bonusAwarded * 2);
+                            updateData.bonus_rollover_progress = userData.bonus_rollover_progress || 0;
+                        }
+
+                        transaction.update(userDocRef, updateData);
                     });
 
                     let toastDescription = `O valor de ${formattedAmount} foi adicionado ao seu saldo.`;
-                    if (isFirstDeposit) {
-                        const formattedBonus = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusAmount);
+                    if (bonusAwarded > 0) {
+                        const formattedBonus = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusAwarded);
                         toastDescription = `Depósito de ${formattedAmount} aprovado! Você ganhou ${formattedBonus} de bônus!`;
                     }
                     toast({ title: 'Pagamento Aprovado!', description: toastDescription });
                     
-                    // After crediting the user, check for a referrer and pay commission
                     const userDocSnapshot = await getDoc(userDocRef);
                     const userData = userDocSnapshot.data() as UserProfile;
 
@@ -96,7 +103,6 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                         const referrerRef = doc(firestore, 'users', userData.referredBy);
                         const commissionAmount = amount * 0.50; // 50% commission
 
-                        // Transaction to pay the referrer
                         await runTransaction(firestore, async (transaction) => {
                             transaction.update(referrerRef, {
                                 balance: increment(commissionAmount),
@@ -105,14 +111,12 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                         });
                     }
 
-                    // Keep success message for a bit before closing
                     setTimeout(onClose, 4000); 
                 }
             } catch (error: any) {
                 console.error("Payment check/commission failed:", error);
-                // Optionally set an error state here if polling fails multiple times
             }
-        }, 5000); // Poll every 5 seconds
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [status, pixData.hash, user, firestore, amount, formattedAmount, onClose, toast]);

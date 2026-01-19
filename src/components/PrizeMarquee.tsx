@@ -103,13 +103,18 @@ export function PrizeMarquee({ prizes }: { prizes?: Prize[] }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isPaused, setIsPaused] = useState(false);
 
+    const getNumericValue = (priceString: string): number => {
+        // Removes 'R$ ', thousand separators '.', and replaces ',' with '.' for parsing
+        return parseFloat(priceString.replace('R$ ', '').replace(/\./g, '').replace(',', '.'));
+    };
+
     const marqueeData = prizes
-    ? prizes.map(p => ({
+    ? [...prizes].sort((a, b) => b.value - a.value).map(p => ({
         name: p.name,
         price: `R$ ${p.value.toFixed(2).replace('.', ',')}`,
         imageUrl: p.imageUrl
       }))
-    : prizeData;
+    : [...prizeData].sort((a, b) => getNumericValue(b.price) - getNumericValue(a.price));
 
     const doubledPrizes = [...marqueeData, ...marqueeData];
 

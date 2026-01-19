@@ -46,13 +46,38 @@ const trocoPremiadoPrizePool: Prize[] = [
     { name: '1000 Reais', value: 1000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1000%20reais.webp?updatedAt=1764425737618', weight: 0.5 },
 ];
 
+const techManiaPrizePool: Prize[] = [
+    { name: 'PlayStation 5', value: 4500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_fone_de_ouvido_lenovo.png?updatedAt=1764427459941', weight: 0.1 },
+    { name: 'Motorola Edge 40 Neo', value: 2800.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/variant_edge_40_neo_256_gb_black_beauty.png?updatedAt=1764427459488', weight: 0.2 },
+    { name: 'iPhone 12', value: 2500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_iphone_12.png?updatedAt=1764427459989', weight: 0.3 },
+    { name: '1.000 Reais', value: 1000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1000%20reais.webp?updatedAt=1764425737618', weight: 0.5 },
+    { name: 'Smartphone Motorola', value: 800.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_c2_nk109.png?updatedAt=1764427458844', weight: 1 },
+    { name: '700 Reais', value: 700.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/700%20reais.webp?updatedAt=1764425737865', weight: 1.5 },
+    { name: 'Bola de futebol', value: 500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_ft_5_branca_e_preta.png?updatedAt=1764427459647', weight: 2 },
+    { name: 'Perfume 212 VIP', value: 399.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_copo_t_rmico_stanley_preto.png?updatedAt=1764427459518', weight: 2.5 },
+    { name: 'Camisa de time', value: 350.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_ft_5_branca_e_preta.png?updatedAt=1764427459647', weight: 3 },
+    { name: 'Fone de ouvido Lenovo', value: 220.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_fone_de_ouvido_lenovo.png?updatedAt=1764427459941', weight: 4 },
+    { name: '200 Reais', value: 200.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/12519586-removebg-preview.png?updatedAt=1764430065755', weight: 5 },
+    { name: 'Copo Stanley preto', value: 165.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_copo_t_rmico_stanley_preto.png?updatedAt=1764427459518', weight: 6 },
+    { name: '100 Reais', value: 100.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/100%20reais.webp?updatedAt=1764425737687', weight: 8 },
+    { name: 'PowerBank', value: 60.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_copo_t_rmico_stanley_preto.png?updatedAt=1764427459518', weight: 10 },
+    { name: '50 Reais', value: 50.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 15 },
+    { name: 'Chinelo Havaianas', value: 35.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_chinelo_havaianas_top_branco.png?updatedAt=1764427460142', weight: 20 },
+    { name: '10 Reais', value: 10.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10%20reais.webp?updatedAt=1764425737251', weight: 25 },
+    { name: '5 Reais', value: 5.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5%20reais.webp?updatedAt=1764425737766', weight: 30 },
+    { name: '3 Reais', value: 3.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/3%20reais.webp?updatedAt=1764425737290', weight: 40 },
+    { name: '2 Reais', value: 2.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/2%20reais.webp?updatedAt=1764425737700', weight: 50 },
+    { name: '1 Real', value: 1.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1%20real.webp?updatedAt=1764425737592', weight: 70 },
+    { name: '0,50 Centavos', value: 0.50, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/360_F_910248111_ln6nauokwOshM2slehpnWLG2y6UI5vNR-removebg-preview.png?updatedAt=1764430170299', weight: 100 },
+];
+
 
 export const prizePools: { [key: string]: Prize[] } = {
   'default': especialRaspagreenPrizePool,
   'troco-premiado': trocoPremiadoPrizePool,
   'especial-raspagreen': especialRaspagreenPrizePool,
   'seu-iphone-17-chegou': especialRaspagreenPrizePool,
-  'tech-mania': especialRaspagreenPrizePool,
+  'tech-mania': techManiaPrizePool,
   'apple-mania': especialRaspagreenPrizePool,
   'beleza-premiada': especialRaspagreenPrizePool,
 };

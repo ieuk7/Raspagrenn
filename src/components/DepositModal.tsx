@@ -13,6 +13,7 @@ interface UserProfile {
     username?: string;
     document?: string;
     phone?: string;
+    depositCount?: number;
 }
 
 export function DepositModal() {
@@ -30,6 +31,8 @@ export function DepositModal() {
     }, [user, firestore]);
 
     const { data: userProfile } = useDoc<UserProfile>(userDocRef);
+
+    const isFirstDeposit = !userProfile?.depositCount || userProfile.depositCount === 0;
 
     function selectAmount(value: string) {
         setAmount(value);
@@ -97,6 +100,11 @@ export function DepositModal() {
             <img src="https://raspagreen.com/deposit_bg.jpg" alt="Banner Promoção" className="banner-img-deposit" />
 
             <div className="modal-content-deposit">
+                {isFirstDeposit && (
+                    <div className="bonus-banner-deposit">
+                        🎉 Ganhe 200% de bônus no seu primeiro depósito!
+                    </div>
+                )}
                 <div className="modal-title-deposit">
                     <svg className="icon-svg-deposit" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="2" y="6" width="20" height="12" rx="2"></rect>

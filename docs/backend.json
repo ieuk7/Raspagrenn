@@ -62,6 +62,10 @@
         "referralsCount": {
           "type": "number",
           "description": "The number of users referred by this user."
+        },
+        "depositCount": {
+          "type": "number",
+          "description": "The number of deposits made by the user."
         }
       },
       "required": [

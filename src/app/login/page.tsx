@@ -75,6 +75,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
             referredBy: '',
             totalCommission: 0,
             referralsCount: 0,
+            depositCount: 0,
           };
 
           if (referralCode) {

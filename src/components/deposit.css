@@ -47,6 +47,19 @@
     padding: 10px 25px 30px 25px;
 }
 
+/* Banner de Bônus */
+.bonus-banner-deposit {
+    background-color: #ffd700;
+    color: #000;
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+
 /* Título "Depositar" */
 .modal-title-deposit {
     color: #fff;

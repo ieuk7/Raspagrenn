@@ -20,6 +20,7 @@ export interface PixData {
 
 interface UserProfile {
     referredBy?: string;
+    depositCount?: number;
 }
 
 interface PixQRCodeModalProps {
@@ -55,14 +56,37 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                     setStatus('paid');
                     clearInterval(interval);
 
-                    // Transaction to credit the depositor's balance
+                    let bonusAmount = 0;
+                    let isFirstDeposit = false;
+
+                    // Transaction to credit the depositor's balance and check for first deposit
                     await runTransaction(firestore, async (transaction) => {
                         const userDoc = await transaction.get(userDocRef);
-                        if (!userDoc.exists()) throw "User not found.";
-                        transaction.update(userDocRef, { balance: increment(amount) });
+                        if (!userDoc.exists()) {
+                            throw new Error("User not found.");
+                        }
+                        
+                        const userData = userDoc.data();
+                        // Check if it's the first deposit
+                        if (!userData.depositCount || userData.depositCount === 0) {
+                            isFirstDeposit = true;
+                            bonusAmount = amount * 2; // 200% bonus
+                        }
+
+                        const totalAmountToCredit = amount + bonusAmount;
+                        
+                        transaction.update(userDocRef, { 
+                            balance: increment(totalAmountToCredit),
+                            depositCount: increment(1) // Always increment deposit count
+                        });
                     });
 
-                    toast({ title: 'Pagamento aprovado!', description: `O valor de ${formattedAmount} foi adicionado ao seu saldo.` });
+                    let toastDescription = `O valor de ${formattedAmount} foi adicionado ao seu saldo.`;
+                    if (isFirstDeposit) {
+                        const formattedBonus = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusAmount);
+                        toastDescription = `Depósito de ${formattedAmount} aprovado! Você ganhou ${formattedBonus} de bônus!`;
+                    }
+                    toast({ title: 'Pagamento Aprovado!', description: toastDescription });
                     
                     // After crediting the user, check for a referrer and pay commission
                     const userDocSnapshot = await getDoc(userDocRef);
@@ -79,7 +103,6 @@ export function PixPaymentModal({ pixData, onClose }: PixQRCodeModalProps) {
                                 totalCommission: increment(commissionAmount)
                             });
                         });
-                         toast({ title: 'Comissão Paga!', description: `Uma comissão foi enviada para quem te indicou.` });
                     }
 
                     // Keep success message for a bit before closing

@@ -132,6 +132,12 @@ export function DepositModal() {
                         inputMode="numeric"
                     />
                 </div>
+                
+                {isFirstDeposit && (
+                    <div className="bonus-preview-deposit">
+                        Você recebe + <span>{formattedBonus}</span> de bônus!
+                    </div>
+                )}
 
                 <div className="amount-grid-deposit">
                     <button className="amount-btn-deposit" onClick={() => selectAmount('10,00')}>
@@ -153,12 +159,6 @@ export function DepositModal() {
                         R$ 100,00
                     </button>
                 </div>
-
-                {isFirstDeposit && (
-                    <div className="bonus-preview-deposit">
-                        Você recebe + <span>{formattedBonus}</span> de bônus!
-                    </div>
-                )}
 
                 <button className="submit-btn-deposit" onClick={handleGeneratePix} disabled={isLoading}>
                     {isLoading ? <Loader2 className="animate-spin icon-svg-deposit" /> : (

@@ -87,7 +87,7 @@
     padding: 12px 15px;
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     transition: border-color 0.2s;
 }
 
@@ -117,7 +117,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Padrão Desktop: 4 colunas */
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .amount-btn-deposit {
@@ -163,14 +163,14 @@
 
 .bonus-preview-deposit {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     font-size: 14px;
     color: #a1a1aa; /* zinc-400 */
 }
 
 .bonus-preview-deposit span {
     font-weight: 700;
-    color: #ffd700; /* gold */
+    color: hsl(var(--primary));
 }
 
 /* Botão Gerar QR Code */

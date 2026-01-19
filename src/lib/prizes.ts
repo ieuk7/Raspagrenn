@@ -47,7 +47,7 @@ const trocoPremiadoPrizePool: Prize[] = [
 ];
 
 const techManiaPrizePool: Prize[] = [
-    { name: 'PlayStation 5', value: 4500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_fone_de_ouvido_lenovo.png?updatedAt=1764427459941', weight: 0.1 },
+    { name: 'PlayStation 5', value: 4500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_playstation_5.png?updatedAt=1764427459496', weight: 0.1 },
     { name: 'Motorola Edge 40 Neo', value: 2800.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/variant_edge_40_neo_256_gb_black_beauty.png?updatedAt=1764427459488', weight: 0.2 },
     { name: 'iPhone 12', value: 2500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_iphone_12.png?updatedAt=1764427459989', weight: 0.3 },
     { name: '1.000 Reais', value: 1000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1000%20reais.webp?updatedAt=1764425737618', weight: 0.5 },

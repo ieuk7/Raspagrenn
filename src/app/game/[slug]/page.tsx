@@ -8,9 +8,9 @@ import { Repeat, Zap, Gift, Coins, Star, Gem, Frown, X } from 'lucide-react';
 import { PrizeMarquee } from '@/components/PrizeMarquee';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, runTransaction } from 'firebase/firestore';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Prize, prizePool, selectRandomPrize } from '@/lib/prizes';
+import { Prize, selectRandomPrize, getPrizePoolBySlug } from '@/lib/prizes';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -64,6 +64,7 @@ export default function GamePage() {
     
     const game = scratchCardsData.find(card => card.slug === slug);
     const cardPrice = game ? parseFloat(game.price.replace('R$ ', '').replace(',', '.')) : 0;
+    const prizePool = useMemo(() => getPrizePoolBySlug(slug), [slug]);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const gameAreaRef = useRef<HTMLDivElement>(null);
@@ -120,12 +121,12 @@ export default function GamePage() {
                 transaction.update(userDocRef, { balance: currentBalance - cardPrice });
 
                 const winPercentage = userDoc.data().win_percentage ?? 50;
-                const prizeWon = selectRandomPrize(winPercentage);
+                const prizeWon = selectRandomPrize(winPercentage, prizePool);
 
                 return prizeWon;
             });
             
-            setupGrid(finalPrize);
+            setupGrid(finalPrize, prizePool);
             setGameResult({ prize: finalPrize, isWin: !!finalPrize });
             setIsGameActive(true);
 
@@ -147,7 +148,7 @@ export default function GamePage() {
         }
     };
     
-    const setupGrid = (winningPrize: Prize | null) => {
+    const setupGrid = (winningPrize: Prize | null, currentPrizePool: Prize[]) => {
         const newGridPrizes: Prize[] = [];
         const gridSize = 9;
 
@@ -159,7 +160,7 @@ export default function GamePage() {
         
         const dummyPrizes: Prize[] = [];
         const prizeCounts: {[key: string]: number} = {};
-        const filteredPool = prizePool.filter(p => p.name !== winningPrize?.name);
+        const filteredPool = currentPrizePool.filter(p => p.name !== winningPrize?.name);
         
         while (dummyPrizes.length < (gridSize - newGridPrizes.length)) {
              const randomIndex = Math.floor(Math.random() * filteredPool.length);
@@ -468,7 +469,7 @@ export default function GamePage() {
                     </div>
                     
                     <div className="lg:col-span-2 space-y-8">
-                        <PrizeMarquee />
+                        <PrizeMarquee prizes={prizePool} />
                     </div>
                 </div>
             </div>

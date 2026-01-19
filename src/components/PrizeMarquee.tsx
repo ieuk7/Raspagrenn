@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import './prizes.css';
+import { type Prize } from '@/lib/prizes';
 
 const prizeData = [
     {
@@ -96,12 +97,21 @@ const prizeData = [
     }
 ];
 
-const doubledPrizes = [...prizeData, ...prizeData];
 
-export function PrizeMarquee() {
+export function PrizeMarquee({ prizes }: { prizes?: Prize[] }) {
     const trackRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [isPaused, setIsPaused] = useState(false);
+
+    const marqueeData = prizes
+    ? prizes.map(p => ({
+        name: p.name,
+        price: `R$ ${p.value.toFixed(2).replace('.', ',')}`,
+        imageUrl: p.imageUrl
+      }))
+    : prizeData;
+
+    const doubledPrizes = [...marqueeData, ...marqueeData];
 
     useEffect(() => {
         const track = trackRef.current;

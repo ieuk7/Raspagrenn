@@ -7,7 +7,7 @@ export interface Prize {
   weight: number; 
 }
 
-export const prizePool: Prize[] = [
+const especialRaspagreenPrizePool: Prize[] = [
     { name: '0,50 centavos', value: 0.5, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/360_F_910248111_ln6nauokwOshM2slehpnWLG2y6UI5vNR-removebg-preview.png?updatedAt=1764430170299', weight: 50 },
     { name: '1 Real', value: 1, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1%20real.webp?updatedAt=1764425737592', weight: 40 },
     { name: '2 Reais', value: 2, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/2%20reais.webp?updatedAt=1764425737700', weight: 35 },
@@ -28,8 +28,41 @@ export const prizePool: Prize[] = [
     { name: 'Iphone 17 Pro Max', value: 16000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/Iphone%2017%20Pro%20Max%20-%2016.000.png?updatedAt=1764428859705', weight: 0.1 },
 ];
 
+const trocoPremiadoPrizePool: Prize[] = [
+    { name: '0,50 Centavos', value: 0.50, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/360_F_910248111_ln6nauokwOshM2slehpnWLG2y6UI5vNR-removebg-preview.png?updatedAt=1764430170299', weight: 100 },
+    { name: '1 Real', value: 1.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1%20real.webp?updatedAt=1764425737592', weight: 80 },
+    { name: '2 Reais', value: 2.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/2%20reais.webp?updatedAt=1764425737700', weight: 70 },
+    { name: '3 Reais', value: 3.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/3%20reais.webp?updatedAt=1764425737290', weight: 60 },
+    { name: '4 Reais', value: 4.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/4%20reais.webp?updatedAt=1764425737624', weight: 50 },
+    { name: '5 Reais', value: 5.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5%20reais.webp?updatedAt=1764425737766', weight: 40 },
+    { name: '10 Reais', value: 10.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10%20reais.webp?updatedAt=1764425737251', weight: 25 },
+    { name: '15 Reais', value: 15.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/15%20reais.webp?updatedAt=1764425737367', weight: 20 },
+    { name: '20 Reais', value: 20.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 15 },
+    { name: '50 Reais', value: 50.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 10 },
+    { name: '100 Reais', value: 100.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/100%20reais.webp?updatedAt=1764425737687', weight: 8 },
+    { name: '200 Reais', value: 200.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/12519586-removebg-preview.png', weight: 4 },
+    { name: '500 Reais', value: 500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/500%20reais.webp?updatedAt=1764425738118', weight: 2 },
+    { name: '700 Reais', value: 700.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/700%20reais.webp?updatedAt=1764425737865', weight: 1 },
+    { name: '1000 Reais', value: 1000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1000%20reais.webp?updatedAt=1764425737618', weight: 0.5 },
+];
+
+
+export const prizePools: { [key: string]: Prize[] } = {
+  'default': especialRaspagreenPrizePool,
+  'troco-premiado': trocoPremiadoPrizePool,
+  'especial-raspagreen': especialRaspagreenPrizePool,
+  'seu-iphone-17-chegou': especialRaspagreenPrizePool,
+  'tech-mania': especialRaspagreenPrizePool,
+  'apple-mania': especialRaspagreenPrizePool,
+  'beleza-premiada': especialRaspagreenPrizePool,
+};
+
+export const getPrizePoolBySlug = (slug: string): Prize[] => {
+    return prizePools[slug] || prizePools.default;
+};
+
 // Helper function to pick a prize based on weight
-export function selectRandomPrize(winPercentage: number): Prize | null {
+export function selectRandomPrize(winPercentage: number, prizePool: Prize[]): Prize | null {
   // First, determine if the user wins at all based on their win_percentage
   const didWin = Math.random() * 100 < winPercentage;
   if (!didWin) {
@@ -52,7 +85,7 @@ export function selectRandomPrize(winPercentage: number): Prize | null {
 }
 
 // Another helper to get "dummy" prizes to fill the grid
-export function getDummyPrizes(count: number, excludePrize: Prize): Prize[] {
+export function getDummyPrizes(count: number, excludePrize: Prize, prizePool: Prize[]): Prize[] {
     const dummies: Prize[] = [];
     const filteredPool = prizePool.filter(p => p.name !== excludePrize.name);
     for (let i = 0; i < count; i++) {

@@ -120,17 +120,18 @@ const appleManiaPrizePool: Prize[] = [
 
 
 const belezaPremiadaPrizePool: Prize[] = [
-    { name: 'Kit Completo de Maquiagem', value: 1000, imageUrl: 'https://picsum.photos/seed/makeupkit/200/200', weight: 1 },
-    { name: 'Vale-Presente de Spa', value: 500, imageUrl: 'https://picsum.photos/seed/spavoucher/200/200', weight: 2 },
-    { name: 'Perfume Chanel No. 5', value: 800, imageUrl: 'https://picsum.photos/seed/chanel5/200/200', weight: 1.5 },
-    { name: 'Kit de Skincare', value: 300, imageUrl: 'https://picsum.photos/seed/skincare/200/200', weight: 5 },
-    { name: 'Batom MAC', value: 100, imageUrl: 'https://picsum.photos/seed/maclipstick/200/200', weight: 10 },
-    { name: 'Paleta de Sombras', value: 150, imageUrl: 'https://picsum.photos/seed/eyeshadow/200/200', weight: 8 },
-    { name: '50 Reais', value: 50, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 20 },
-    { name: '20 Reais', value: 20, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 30 },
-    { name: '10 Reais', value: 10, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10%20reais.webp?updatedAt=1764425737251', weight: 40 },
-    { name: '5 Reais', value: 5, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5%20reais.webp?updatedAt=1764425737766', weight: 50 },
-    { name: '3 Reais', value: 3, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/3%20reais.webp?updatedAt=1764425737290', weight: 60 },
+    { name: 'Secador Dayson', value: 5000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/Secador%20Dayson%20-%205000.png?updatedAt=1764428955694', weight: 0.1 },
+    { name: 'Bolsa Michael Kors', value: 1000.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/bolsamichaelkors-removebg-preview.png?updatedAt=1764430881467', weight: 0.5 },
+    { name: 'Perfume Tom Ford', value: 700.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/6efd9509-6a82-4d10-949a-277115947fcb-fucking-fabulous-tom-ford-eau-de-parfum-perfume-unissex-50ml.webp?updatedAt=1764428446467', weight: 1 },
+    { name: 'Kit Pincel Boca Rosa', value: 300.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/Kit%20Pincel%20Boca%20Rosa%20-%20300.png?updatedAt=1764428955463', weight: 2 },
+    { name: 'Maleta De Maquiagem', value: 200.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/Maleta%20de%20Maquiagem%20-%20200.png?updatedAt=1764428955710', weight: 3 },
+    { name: '200 Reais', value: 200.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/12519586-removebg-preview.png?updatedAt=1764430065755', weight: 3 },
+    { name: 'Relógio Cassio', value: 150.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/Rel%C3%B3gio%20Cassio%20-%20150.png?updatedAt=1764428955120', weight: 5 },
+    { name: '50 Reais', value: 50.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50%20reais.webp?updatedAt=1764425737226', weight: 15 },
+    { name: '15 Reais', value: 15.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/15%20reais.webp?updatedAt=1764425737367', weight: 25 },
+    { name: '10 Reais', value: 10.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10%20reais.webp?updatedAt=1764425737251', weight: 35 },
+    { name: '5 Reais', value: 5.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5%20reais.webp?updatedAt=1764425737766', weight: 50 },
+    { name: '2 Reais', value: 2.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/2%20reais.webp?updatedAt=1764425737700', weight: 70 },
 ];
 
 

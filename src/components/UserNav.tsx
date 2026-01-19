@@ -27,6 +27,7 @@ import {
   Gamepad2,
   Receipt,
   Wallet,
+  Gift,
 } from 'lucide-react';
 import { DepositModal } from './DepositModal';
 import { WithdrawModal } from './WithdrawModal';
@@ -157,6 +158,12 @@ export function UserNav() {
                 <DropdownMenuItem>
                   <UserIcon className="mr-2 h-4 w-4" />
                   <span>Conta</span>
+                </DropdownMenuItem>
+              </Link>
+               <Link href="/referral">
+                <DropdownMenuItem>
+                  <Gift className="mr-2 h-4 w-4" />
+                  <span>Indique e Ganhe</span>
                 </DropdownMenuItem>
               </Link>
               <Dialog>

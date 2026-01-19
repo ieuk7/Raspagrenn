@@ -12,7 +12,7 @@ import {
     Tv2
   } from 'lucide-react';
 import { prizePools, Prize } from '@/lib/prizes';
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 // Flatten all prize pools into a single array of prizes
 const allPrizes = Object.values(prizePools).flat();
@@ -95,13 +95,18 @@ const generateWinners = (count: number, prizes: Prize[], names: string[]): any[]
 };
   
 export function WinnersTicker() {
-    // useMemo to generate winners only once per render
-    const winners = useMemo(() => generateWinners(10, allPrizes, fakeWinnerNames), []);
+    const [winners, setWinners] = useState<any[]>([]);
+
+    useEffect(() => {
+        // This code runs only on the client, after the initial render.
+        setWinners(generateWinners(10, allPrizes, fakeWinnerNames));
+    }, []);
+
     // Duplica os vencedores para o efeito de rolagem infinita
     const doubledWinners = [...winners, ...winners];
 
     if (winners.length === 0) {
-        return null; // Don't render if there's no data to show
+        return null; // Don't render if there's no data to show (e.g., during SSR)
     }
 
     return (

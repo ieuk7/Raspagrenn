@@ -31,6 +31,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
         toast({ title: 'Login bem-sucedido!' });
+        onAuthSuccess?.();
         router.push('/account');
 
       } else {
@@ -85,9 +86,9 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
           }
         }
         toast({ title: 'Conta criada com sucesso!' });
+        onAuthSuccess?.();
         router.push('/account');
       }
-      onAuthSuccess?.();
 
     } catch (error: any) {
       console.error(error);

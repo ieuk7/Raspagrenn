@@ -34,6 +34,11 @@ export function DepositModal() {
 
     const isFirstDeposit = !userProfile?.depositCount || userProfile.depositCount === 0;
 
+    const numericAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
+    const bonusAmount = isFirstDeposit && !isNaN(numericAmount) ? numericAmount * 2 : 0;
+    const formattedBonus = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bonusAmount);
+
+
     function selectAmount(value: string) {
         setAmount(value);
     }
@@ -148,6 +153,12 @@ export function DepositModal() {
                         R$ 100,00
                     </button>
                 </div>
+
+                {isFirstDeposit && (
+                    <div className="bonus-preview-deposit">
+                        Você recebe + <span>{formattedBonus}</span> de bônus!
+                    </div>
+                )}
 
                 <button className="submit-btn-deposit" onClick={handleGeneratePix} disabled={isLoading}>
                     {isLoading ? <Loader2 className="animate-spin icon-svg-deposit" /> : (

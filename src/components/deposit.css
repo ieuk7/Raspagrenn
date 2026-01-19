@@ -117,7 +117,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Padrão Desktop: 4 colunas */
     gap: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .amount-btn-deposit {
@@ -159,6 +159,18 @@
     gap: 2px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     z-index: 2;
+}
+
+.bonus-preview-deposit {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #a1a1aa; /* zinc-400 */
+}
+
+.bonus-preview-deposit span {
+    font-weight: 700;
+    color: #ffd700; /* gold */
 }
 
 /* Botão Gerar QR Code */

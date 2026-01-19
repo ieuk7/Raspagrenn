@@ -55,7 +55,7 @@ const techManiaPrizePool: Prize[] = [
     { name: '700 Reais', value: 700.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/700%20reais.webp?updatedAt=1764425737865', weight: 1.5 },
     { name: 'Bola de futebol', value: 500.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_ft_5_branca_e_preta.png?updatedAt=1764427459647', weight: 2 },
     { name: 'Perfume 212 VIP', value: 399.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_212_vip_black.png?updatedAt=1764427460315', weight: 2.5 },
-    { name: 'Camisa de time', value: 350.00, imageUrl: 'https://pt.pngtree.com/freepng/brazil-soccer-team-home-jersey_8696512.html', weight: 3 },
+    { name: 'Camisa de time', value: 350.00, imageUrl: 'https://pt.pngtree.com/so/t--shirt-mockup', weight: 3 },
     { name: 'Fone de ouvido Lenovo', value: 220.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_fone_de_ouvido_lenovo.png?updatedAt=1764427459941', weight: 4 },
     { name: '200 Reais', value: 200.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/12519586-removebg-preview.png?updatedAt=1764430065755', weight: 5 },
     { name: 'Copo Stanley preto', value: 165.00, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha%202/item_copo_t_rmico_stanley_preto.png?updatedAt=1764427459518', weight: 6 },

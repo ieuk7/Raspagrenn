@@ -10,8 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { doc, setDoc, getDocs, query, where, collection, runTransaction, increment } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
-export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => void }) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { onAuthSuccess?: () => void, initialView?: 'login' | 'register' }) {
+  const [isLogin, setIsLogin] = useState(initialView === 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,6 +19,10 @@ export default function LoginPage({ onAuthSuccess }: { onAuthSuccess?: () => voi
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
+
+  useEffect(() => {
+    setIsLogin(initialView === 'login');
+  }, [initialView]);
 
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {

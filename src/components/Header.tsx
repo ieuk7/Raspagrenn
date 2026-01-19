@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +25,12 @@ import './header.css';
 export function Header() {
   const { user, isUserLoading } = useUser();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [initialView, setInitialView] = useState<'login' | 'register'>('login');
+
+  const openAuthDialog = (view: 'login' | 'register') => {
+    setInitialView(view);
+    setIsLoginOpen(true);
+  };
 
   return (
     <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
@@ -61,15 +66,11 @@ export function Header() {
             <UserNav />
           ) : (
             <div className="header-right">
-              <DialogTrigger asChild>
-                <Button variant="ghost">Entrar</Button>
-              </DialogTrigger>
-              <DialogTrigger asChild>
-                <Button>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Registrar
-                </Button>
-              </DialogTrigger>
+              <Button variant="ghost" onClick={() => openAuthDialog('login')}>Entrar</Button>
+              <Button onClick={() => openAuthDialog('register')}>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Registrar
+              </Button>
             </div>
           )}
         </div>
@@ -81,7 +82,7 @@ export function Header() {
             Acesse sua conta ou crie uma nova para começar a jogar.
           </DialogDescription>
         </DialogHeader>
-        <LoginPage onAuthSuccess={() => setIsLoginOpen(false)} />
+        <LoginPage onAuthSuccess={() => setIsLoginOpen(false)} initialView={initialView} />
       </DialogContent>
     </Dialog>
   );

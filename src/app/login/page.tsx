@@ -24,6 +24,25 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
     setIsLogin(initialView === 'login');
   }, [initialView]);
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.substring(0, 11);
+    let formattedValue = '';
+
+    if (value.length === 0) {
+        formattedValue = '';
+    } else if (value.length <= 2) {
+        formattedValue = `(${value}`;
+    } else if (value.length <= 3) {
+        formattedValue = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+    } else if (value.length <= 7) {
+        formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3)}`;
+    } else {
+        formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3, 7)}-${value.slice(7)}`;
+    }
+    setPhone(formattedValue);
+  };
+
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,7 +63,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
             id: user.uid,
             email: user.email,
             username: user.email?.split('@')[0] || '',
-            phone: phone,
+            phone: phone.replace(/\D/g, ''),
             document: '',
             balance: 0,
             win_percentage: 5,
@@ -279,9 +298,9 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
                   </div>
                   <input
                     type="tel"
-                    placeholder="(00) 0000-0000"
+                    placeholder="(00) 9 9999-9999"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={handlePhoneChange}
                   />
                 </div>
               </div>

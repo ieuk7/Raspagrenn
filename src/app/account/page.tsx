@@ -30,6 +30,16 @@ interface UserProfile {
     balance?: number;
 }
 
+const formatPhoneForDisplay = (phoneStr: string | undefined | null) => {
+    if (!phoneStr) return '';
+    const cleaned = phoneStr.replace(/\D/g, '');
+    if (cleaned.length === 11) {
+        return cleaned.replace(/(\d{2})(\d)(\d{4})(\d{4})/, '($1) $2 $3-$4');
+    }
+    return phoneStr;
+};
+
+
 export default function AccountPage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
@@ -180,10 +190,10 @@ export default function AccountPage() {
             <EditInfoDialog
               fieldLabel="Telefone"
               fieldId="phone"
-              currentValue={phone || ''}
+              currentValue={formatPhoneForDisplay(phone) || ''}
               onSave={handleSave}
               icon={<Smartphone size={16} />}
-              placeholder="(00) 00000-0000"
+              placeholder="(00) 9 9999-9999"
             />
             <EditInfoDialog
               fieldLabel="Documento"

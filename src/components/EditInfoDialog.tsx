@@ -32,7 +32,11 @@ export function EditInfoDialog({ fieldLabel, fieldId, currentValue, onSave, icon
 
   const handleSave = async () => {
     try {
-      await onSave(fieldId, newValue);
+      let valueToSave = newValue;
+      if (fieldId === 'phone') {
+        valueToSave = newValue.replace(/\D/g, '');
+      }
+      await onSave(fieldId, valueToSave);
       toast({ title: `${fieldLabel} atualizado com sucesso!` });
       setIsOpen(false);
     } catch (error: any) {
@@ -43,6 +47,30 @@ export function EditInfoDialog({ fieldLabel, fieldId, currentValue, onSave, icon
       });
     }
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (fieldId === 'phone') {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.substring(0, 11);
+      let formattedValue = '';
+
+      if (value.length === 0) {
+          formattedValue = '';
+      } else if (value.length <= 2) {
+          formattedValue = `(${value}`;
+      } else if (value.length <= 3) {
+          formattedValue = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+      } else if (value.length <= 7) {
+          formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3)}`;
+      } else {
+          formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3, 7)}-${value.slice(7)}`;
+      }
+      setNewValue(formattedValue);
+    } else {
+      setNewValue(e.target.value);
+    }
+  };
+
 
   useEffect(() => {
     setNewValue(currentValue);
@@ -80,7 +108,7 @@ export function EditInfoDialog({ fieldLabel, fieldId, currentValue, onSave, icon
             <Input
               id={fieldId}
               value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
+              onChange={handleInputChange}
               className="col-span-3"
               placeholder={placeholder}
             />

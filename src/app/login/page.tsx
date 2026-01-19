@@ -27,17 +27,18 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
     value = value.substring(0, 11);
+    const len = value.length;
     let formattedValue = '';
 
-    if (value.length === 0) {
+    if (len === 0) {
         formattedValue = '';
-    } else if (value.length <= 2) {
+    } else if (len <= 2) {
         formattedValue = `(${value}`;
-    } else if (value.length <= 3) {
+    } else if (len <= 6) { // (XX) XXXX
         formattedValue = `(${value.slice(0, 2)}) ${value.slice(2)}`;
-    } else if (value.length <= 7) {
-        formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3)}`;
-    } else {
+    } else if (len <= 10) { // (XX) XXXX-XXXX
+        formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+    } else { // 11 digits: (XX) 9 XXXX-XXXX
         formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3, 7)}-${value.slice(7)}`;
     }
     setPhone(formattedValue);
@@ -298,7 +299,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
                   </div>
                   <input
                     type="tel"
-                    placeholder="(00) 9 9999-9999"
+                    placeholder="(00) 99999-9999"
                     value={phone}
                     onChange={handlePhoneChange}
                   />

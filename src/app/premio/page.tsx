@@ -259,23 +259,6 @@ export default function PremioPage() {
                 </span>
             </div>
 
-            <header className="header">
-                <div className="header-left">
-                    <img src="https://ik.imagekit.io/cd7ikp5fv/raspa-green-logo.png" alt="Raspa Green Logo" />
-                </div>
-                <div className="header-center">
-                    <a href="#" className="nav-item">Inicio</a>
-                    <a href="#" className="nav-item">Raspadinhas</a>
-                </div>
-                <div className="header-right">
-                    <div className="balance-box">R$ 0,00</div>
-                    <button className="btn-deposit"><i className="fas fa-wallet"></i> <span>Depositar</span></button>
-                    <div className="user-profile">
-                        <div className="avatar-circle">S</div>
-                    </div>
-                </div>
-            </header>
-
             <main className="funnel-container">
                 <h2 className="cta-title">Ganhe <span className="highlight">R$ 1.000,00</span> de Bônus</h2>
                 <div className="attempts-display" id="attemptsText" ref={attemptsTextRef}>Tentativa 1 de 3</div>

@@ -1,0 +1,201 @@
+/* --- RESET --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body {
+    background-color: #050505;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* --- BARRA DE GANHADORES --- */
+.winners-bar {
+    background-color: #0f2e0f;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 8px 0;
+    text-align: center;
+    border-bottom: 1px solid #1a1a1a;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    z-index: 101;
+}
+.winner-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    animation: fadeInOut 4s infinite;
+}
+.winner-highlight { color: #2ee606; font-weight: 700; }
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* --- HEADER --- */
+.header {
+    background-color: #080808; height: 70px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #1a1a1a;
+    position: relative; z-index: 100;
+}
+.header-left img { height: 40px; width: auto; }
+.header-center { display: flex; gap: 30px; }
+.nav-item { color: #fff; text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.balance-box { background: #1f1f1f; color: #fff; padding: 8px 12px; border-radius: 6px; font-weight: 700; display: flex; align-items: center; border: 1px solid #333; }
+.btn-deposit { background: #2ee606; color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.user-profile { display: flex; align-items: center; gap: 10px; color: #fff; }
+.avatar-circle { width: 36px; height: 36px; background: #b026ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+
+@media (max-width: 768px) {
+    .header { padding: 0 15px; height: 60px; }
+    .header-center, .user-name, .btn-deposit span { display: none; }
+    .btn-deposit { padding: 0; width: 38px; height: 38px; justify-content: center; }
+}
+
+/* --- ÁREA DO JOGO --- */
+.funnel-container {
+    flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px; background: radial-gradient(circle at center, #0a2e0a 0%, #050505 80%);
+}
+.cta-title { color: #fff; font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 10px; }
+.attempts-display {
+    color: #aaa; font-size: 1rem; margin-bottom: 20px; background: #222; padding: 5px 15px; border-radius: 20px; border: 1px solid #444;
+}
+.highlight { color: #2ee606; }
+
+.game-border-box {
+    position: relative;
+    width: 100%; max-width: 380px;
+    padding: 15px;
+    background: #00aa00; 
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0, 170, 0, 0.4);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 30px rgba(0,170,0,0.2); } 50% { box-shadow: 0 0 50px rgba(0,170,0,0.5); } }
+
+.game-inner-area {
+    position: relative;
+    width: 100%; height: 420px;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* --- GRID 9 ITENS --- */
+.grid-9-items {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr); 
+    gap: 8px; padding: 10px;
+    z-index: 1;
+}
+
+.grid-item {
+    background: #222;
+    border: 1px solid #333; 
+    border-radius: 8px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #fff; font-weight: bold; font-size: 0.85rem;
+}
+
+.grid-item.winner {
+    background: #0a2e0a;
+    border: 1px solid #2ee606; 
+    color: #2ee606;
+    box-shadow: inset 0 0 10px rgba(46, 230, 6, 0.1);
+}
+
+.grid-item i { font-size: 24px; margin-bottom: 5px; }
+.grid-item.winner i { color: #2ee606; }
+.grid-item i.fa-coins, .grid-item i.fa-frown, .grid-item i.fa-bolt { color: #fff; }
+
+/* --- CANVAS --- */
+#scratch-canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 5; cursor: crosshair; touch-action: none;
+}
+
+/* --- TELA INICIAL --- */
+.start-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 10; background: rgba(0,0,0,0.9);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.5s;
+}
+.btn-start {
+    background: #2ee606; color: #000; padding: 15px 30px; border-radius: 50px;
+    border: none; font-weight: 800; font-size: 1.1rem; cursor: pointer;
+    box-shadow: 0 0 20px rgba(46, 230, 6, 0.4); animation: bounce 1.5s infinite;
+}
+@keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+/* --- MODAL DE PERDA --- */
+.modal-loss {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 20; 
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    backdrop-filter: blur(5px);
+}
+.loss-content {
+    background: #1a1a1a; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333;
+    width: 80%;
+}
+.btn-retry {
+    background: #fff; color: #000; padding: 10px 20px; border-radius: 50px;
+    border: none; font-weight: 700; cursor: pointer; margin-top: 15px;
+}
+
+/* --- MODAL DE VITÓRIA (MULTI-STEP) --- */
+.modal-wrapper {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95); z-index: 2000; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+}
+.modal-content {
+    background: #121212; width: 100%; max-width: 400px; border-radius: 16px;
+    padding: 25px; text-align: center; border: 2px solid #2ee606;
+    transform: scale(0.8); opacity: 0; transition: all 0.5s ease;
+    position: relative;
+}
+.modal-content.active { transform: scale(1); opacity: 1; }
+
+/* Barra de Progresso */
+.progress-container {
+    width: 100%; background: #333; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden;
+}
+.progress-bar {
+    height: 100%; background: #ffd700; width: 90%; /* 90% Completo */
+    border-radius: 5px; box-shadow: 0 0 10px #ffd700;
+}
+.progress-text { font-size: 0.8rem; color: #ffd700; margin-bottom: 5px; text-align: right; }
+
+/* Botões */
+.btn-claim-step1 {
+    background: #2ee606; color: #000; width: 100%; padding: 15px; 
+    border-radius: 8px; border: none; font-weight: 800; cursor: pointer; 
+    font-size: 1.1rem; margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(46, 230, 6, 0.4);
+}
+
+.btn-whatsapp {
+    background: #25D366; color: #fff; width: 100%; padding: 15px; 
+    border-radius: 8px; border: none; font-weight: 800; cursor: pointer; 
+    font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 10px; transition: transform 0.1s;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+.btn-whatsapp:active { transform: scale(0.98); }
+
+.btn-final {
+    background: #2ee606; color: #000; width: 100%; padding: 15px; 
+    border-radius: 8px; border: none; font-weight: 800; cursor: pointer; 
+    font-size: 1.1rem; margin-top: 10px; animation: pulse 1.5s infinite;
+}
+
+#confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1900; }

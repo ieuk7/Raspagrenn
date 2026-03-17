@@ -219,11 +219,35 @@ export default function GamePage() {
         if(!isGameActive || isGameFinished) return;
         
         const canvas = canvasRef.current;
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            ctx?.clearRect(0, 0, canvas.width, canvas.height);
+        if (!canvas) {
+             setTimeout(() => handleGameEnd(), 500);
+             return;
         }
-        setTimeout(() => handleGameEnd(), 500); 
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            setTimeout(() => handleGameEnd(), 500);
+            return;
+        }
+        
+        const duration = 300; // ms
+        let startTime: number | null = null;
+
+        const animate = (currentTime: number) => {
+            if (startTime === null) startTime = currentTime;
+            const elapsedTime = currentTime - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+
+            // A simple wipe animation to "auto-scratch"
+            ctx.clearRect(0, 0, canvas.width * progress, canvas.height);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                setTimeout(() => handleGameEnd(), 500);
+            }
+        };
+
+        requestAnimationFrame(animate);
     };
 
     const handleGameEnd = async () => {

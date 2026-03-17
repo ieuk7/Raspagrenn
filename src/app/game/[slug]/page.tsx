@@ -64,6 +64,7 @@ export default function GamePage() {
     const [roundsPlayed, setRoundsPlayed] = useState(0);
     const [isAutoPlayDialogOpen, setIsAutoPlayDialogOpen] = useState(false);
     const [autoPlayInput, setAutoPlayInput] = useState('10');
+    const [autoPlayWinnings, setAutoPlayWinnings] = useState(0);
     
     const game = scratchCardsData.find(card => card.slug === slug);
     const cardPrice = game ? parseFloat(game.price.replace('R$ ', '').replace(',', '.')) : 0;
@@ -81,18 +82,24 @@ export default function GamePage() {
 
     // --- Autoplay Effect ---
     useEffect(() => {
+        let timer: NodeJS.Timeout;
         if (isAutoPlay && !isGameActive && !isProcessing && roundsPlayed < autoPlayRounds) {
-            const timer = setTimeout(() => {
+            timer = setTimeout(() => {
                 handleBuyAndScratch();
-            }, 1000); // 1s delay between rounds
-            return () => clearTimeout(timer);
-        }
-
-        if (isAutoPlay && roundsPlayed >= autoPlayRounds) {
+            }, 250); // Short delay
+        } else if (isAutoPlay && roundsPlayed >= autoPlayRounds) {
             setIsAutoPlay(false);
-            toast({ title: 'Jogo automático concluído!' });
+            const formattedWinnings = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(autoPlayWinnings);
+            toast({
+                title: 'Jogo automático concluído!',
+                description: `Você jogou ${roundsPlayed} rodadas e ganhou ${formattedWinnings}.`
+            });
+            // Reset counters for next session
+            setRoundsPlayed(0);
+            setAutoPlayWinnings(0);
         }
-    }, [isAutoPlay, isGameActive, isProcessing, roundsPlayed, autoPlayRounds]);
+        return () => clearTimeout(timer);
+    }, [isAutoPlay, isGameActive, isProcessing, roundsPlayed, autoPlayRounds, autoPlayWinnings]);
 
     const handleBuyAndScratch = async () => {
         if (!user || !userProfile || !userDocRef) {
@@ -243,34 +250,46 @@ export default function GamePage() {
 
     const handleGameEnd = async () => {
         if (!gameResult || !userDocRef || isGameFinished) return;
-        
+    
         setIsGameFinished(true);
-        
-        let toastTitle = "Que pena!";
-        let toastDescription = "Mais sorte na próxima vez.";
-
+    
         if (gameResult.isWin && gameResult.prize) {
             const prizeValue = gameResult.prize.value;
-            toastTitle = "Parabéns!";
-            toastDescription = `Você ganhou R$ ${prizeValue.toFixed(2).replace('.',',')}`;
-
+    
+            if (isAutoPlay) {
+                setAutoPlayWinnings(prev => prev + prizeValue);
+            } else {
+                toast({
+                    title: "Parabéns!",
+                    description: `Você ganhou R$ ${prizeValue.toFixed(2).replace('.', ',')}`
+                });
+            }
+    
             try {
-                // Winnings always go to the main balance
                 await runTransaction(firestore, async (transaction) => {
                     transaction.update(userDocRef, { balance: increment(prizeValue) });
                 });
             } catch (e: any) {
-                toast({ variant: 'destructive', title: 'Erro ao creditar prêmio', description: e.message });
+                if (isAutoPlay) {
+                    setIsAutoPlay(false); // Stop on error
+                    toast({ variant: 'destructive', title: 'Jogo automático parado por erro.', description: 'Não foi possível creditar o prêmio.' });
+                } else {
+                    toast({ variant: 'destructive', title: 'Erro ao creditar prêmio', description: e.message });
+                }
+            }
+        } else { // It's a loss
+            if (!isAutoPlay) {
+                toast({ title: "Que pena!", description: "Mais sorte na próxima vez." });
             }
         }
-        
-        toast({ title: toastTitle, description: toastDescription });
-        
+    
+        const delay = isAutoPlay ? 250 : 2000;
+    
         setTimeout(() => {
             setIsGameActive(false);
             setGameResult(null);
             setIsProcessing(false);
-        }, 4000);
+        }, delay);
     };
 
     const handleTurboClick = () => {
@@ -285,6 +304,7 @@ export default function GamePage() {
         if (isAutoPlay) {
             setIsAutoPlay(false);
             setRoundsPlayed(0);
+            setAutoPlayWinnings(0);
             toast({ title: 'Jogo automático parado.' });
         } else {
             setIsAutoPlayDialogOpen(true);
@@ -293,11 +313,13 @@ export default function GamePage() {
     
     const handleStartAutoPlay = () => {
         const rounds = parseInt(autoPlayInput, 10);
-        if (rounds > 0 && rounds <= 100) { // Add a reasonable limit
+        if (rounds > 0 && rounds <= 100) {
             setAutoPlayRounds(rounds);
             setRoundsPlayed(0);
+            setAutoPlayWinnings(0);
             setIsAutoPlay(true);
             setIsAutoPlayDialogOpen(false);
+            toast({ title: `Iniciando ${rounds} rodadas...`});
         } else {
             toast({ variant: 'destructive', title: 'Número de rodadas inválido.', description: 'Por favor, insira um número entre 1 e 100.' });
         }
@@ -461,7 +483,7 @@ export default function GamePage() {
                                             ))}
                                         </div>
                                         <canvas id="scratchCanvas" ref={canvasRef} className={cn(isGameFinished && 'opacity-0')}></canvas>
-                                        {isGameFinished && gameResult && (
+                                        {isGameFinished && gameResult && !isAutoPlay && (
                                             <div className="scratch-result-overlay">
                                                 {gameResult.isWin && gameResult.prize ? (
                                                     <>
@@ -551,3 +573,5 @@ export default function GamePage() {
         </div>
     );
 }
+
+    

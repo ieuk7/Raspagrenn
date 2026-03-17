@@ -150,6 +150,11 @@
 }
 .scratch-btn-auto:disabled { cursor: not-allowed; opacity: 0.6; }
 
+.scratch-btn-auto.auto-play-active {
+    background-color: #2ee606;
+    color: #000;
+    animation: pulse-green 1.5s infinite;
+}
 
 .scratch-controls-bar .scratch-btn-buy { height: 44px; }
 .scratch-top-hint { position: absolute; top: 15px; width: 100%; text-align: center; color: #666; font-size: 0.75rem; z-index: 5; }
@@ -173,6 +178,18 @@
 
 @keyframes fadeIn {
     to { opacity: 1; }
+}
+
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 10px rgba(46, 230, 6, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(46, 230, 6, 0.9);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(46, 230, 6, 0.4);
+    }
 }
 
 .scratch-result-title {

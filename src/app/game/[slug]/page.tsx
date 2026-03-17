@@ -4,7 +4,7 @@ import { scratchCardsData } from '@/lib/scratch-card-data';
 import Image from 'next/image';
 import { WinnersTicker } from '@/components/WinnersTicker';
 import '../game.css';
-import { Repeat, Zap, Gift, Coins, Star, Gem, Frown, X } from 'lucide-react';
+import { Repeat, Zap, Coins, X } from 'lucide-react';
 import { PrizeMarquee } from '@/components/PrizeMarquee';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, runTransaction, increment } from 'firebase/firestore';
@@ -12,17 +12,6 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Prize, selectRandomPrize, getPrizePoolBySlug } from '@/lib/prizes';
 import { cn } from '@/lib/utils';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 
 
 interface UserProfile {
@@ -60,10 +49,7 @@ export default function GamePage() {
     // New states for Turbo and Auto-Play
     const [isTurboActive, setIsTurboActive] = useState(false);
     const [isAutoPlay, setIsAutoPlay] = useState(false);
-    const [autoPlayRounds, setAutoPlayRounds] = useState(10);
     const [roundsPlayed, setRoundsPlayed] = useState(0);
-    const [isAutoPlayDialogOpen, setIsAutoPlayDialogOpen] = useState(false);
-    const [autoPlayInput, setAutoPlayInput] = useState('10');
     const [autoPlayWinnings, setAutoPlayWinnings] = useState(0);
     
     const game = scratchCardsData.find(card => card.slug === slug);
@@ -83,23 +69,13 @@ export default function GamePage() {
     // --- Autoplay Effect ---
     useEffect(() => {
         let timer: NodeJS.Timeout;
-        if (isAutoPlay && !isGameActive && !isProcessing && roundsPlayed < autoPlayRounds) {
+        if (isAutoPlay && !isGameActive && !isProcessing) {
             timer = setTimeout(() => {
                 handleBuyAndScratch();
             }, 250); // Short delay
-        } else if (isAutoPlay && roundsPlayed >= autoPlayRounds) {
-            setIsAutoPlay(false);
-            const formattedWinnings = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(autoPlayWinnings);
-            toast({
-                title: 'Jogo automático concluído!',
-                description: `Você jogou ${roundsPlayed} rodadas e ganhou ${formattedWinnings}.`
-            });
-            // Reset counters for next session
-            setRoundsPlayed(0);
-            setAutoPlayWinnings(0);
         }
         return () => clearTimeout(timer);
-    }, [isAutoPlay, isGameActive, isProcessing, roundsPlayed, autoPlayRounds, autoPlayWinnings]);
+    }, [isAutoPlay, isGameActive, isProcessing, roundsPlayed]);
 
     const handleBuyAndScratch = async () => {
         if (!user || !userProfile || !userDocRef) {
@@ -197,6 +173,8 @@ export default function GamePage() {
             });
             if (isAutoPlay) {
                 setIsAutoPlay(false);
+                setRoundsPlayed(0);
+                setAutoPlayWinnings(0);
             }
             setIsProcessing(false); // Reset on error to allow retry
         }
@@ -302,29 +280,29 @@ export default function GamePage() {
 
     const handleAutoPlayToggle = () => {
         if (isAutoPlay) {
+            // Stop auto-play
             setIsAutoPlay(false);
+            if (roundsPlayed > 0) {
+                const formattedWinnings = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(autoPlayWinnings);
+                toast({
+                    title: 'Jogo automático parado!',
+                    description: `Você jogou ${roundsPlayed} rodadas e ganhou ${formattedWinnings}.`
+                });
+            } else {
+                 toast({ title: 'Jogo automático parado.' });
+            }
+            // Reset counters for next session
             setRoundsPlayed(0);
             setAutoPlayWinnings(0);
-            toast({ title: 'Jogo automático parado.' });
         } else {
-            setIsAutoPlayDialogOpen(true);
-        }
-    };
-    
-    const handleStartAutoPlay = () => {
-        const rounds = parseInt(autoPlayInput, 10);
-        if (rounds > 0 && rounds <= 100) {
-            setAutoPlayRounds(rounds);
+            // Start auto-play
             setRoundsPlayed(0);
             setAutoPlayWinnings(0);
             setIsAutoPlay(true);
-            setIsAutoPlayDialogOpen(false);
-            toast({ title: `Iniciando ${rounds} rodadas...`});
-        } else {
-            toast({ variant: 'destructive', title: 'Número de rodadas inválido.', description: 'Por favor, insira um número entre 1 e 100.' });
+            toast({ title: 'Iniciando jogo automático...' });
         }
     };
-
+    
     useEffect(() => {
         if (!isGameActive || !canvasRef.current || !gameAreaRef.current) return;
 
@@ -517,13 +495,13 @@ export default function GamePage() {
                                     <Zap />
                                 </button>
                                 <button
-                                    className="scratch-btn-auto"
+                                    className={cn("scratch-btn-auto", isAutoPlay && "auto-play-active")}
                                     disabled={!isAutoPlay && (isGameActive || isProcessing)}
                                     onClick={handleAutoPlayToggle}
                                 >
                                     {isAutoPlay ? (
                                         <>
-                                            <X className="mr-2" /> Parar ({roundsPlayed}/{autoPlayRounds})
+                                            <X className="mr-2" /> Parar ({roundsPlayed})
                                         </>
                                     ) : (
                                         <>
@@ -540,38 +518,6 @@ export default function GamePage() {
                     </div>
                 </div>
             </div>
-
-            <Dialog open={isAutoPlayDialogOpen} onOpenChange={setIsAutoPlayDialogOpen}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                    <DialogTitle>Jogo Automático</DialogTitle>
-                    <DialogDescription>
-                        Defina quantas rodadas você quer jogar. O jogo irá parar se o seu saldo acabar ou você clicar em parar.
-                    </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="rounds" className="text-right">
-                        Rodadas
-                        </Label>
-                        <Input
-                        id="rounds"
-                        value={autoPlayInput}
-                        onChange={(e) => setAutoPlayInput(e.target.value)}
-                        type="number"
-                        className="col-span-3"
-                        placeholder="Ex: 10"
-                        />
-                    </div>
-                    </div>
-                    <DialogFooter>
-                    <Button onClick={handleStartAutoPlay}>Iniciar Jogo Automático</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
         </div>
     );
 }
-
-    

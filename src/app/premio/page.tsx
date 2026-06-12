@@ -202,6 +202,8 @@ export default function PremioPage() {
         }
 
         (window as any).redirectToRegister = () => {
+            // Save gift flag in session
+            sessionStorage.setItem('funnelGift', '10');
             router.push('/registro');
         }
 

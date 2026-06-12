@@ -59,6 +59,9 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
         if (userCredential.user) {
           const user = userCredential.user;
           const referralCode = sessionStorage.getItem('referralCode');
+          const funnelGift = sessionStorage.getItem('funnelGift');
+          
+          const initialBalance = funnelGift ? parseFloat(funnelGift) : 0;
 
           const newUserDocData: any = {
             id: user.uid,
@@ -66,7 +69,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
             username: user.email?.split('@')[0] || '',
             phone: phone.replace(/\D/g, ''),
             document: '',
-            balance: 0,
+            balance: initialBalance,
             bonus_balance: 0,
             bonus_rollover_requirement: 0,
             bonus_rollover_progress: 0,
@@ -107,6 +110,11 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
             sessionStorage.removeItem('referralCode');
           } else {
             await setDoc(doc(firestore, 'users', user.uid), newUserDocData);
+          }
+          
+          if (funnelGift) {
+            sessionStorage.removeItem('funnelGift');
+            toast({ title: `Parabéns! Você ganhou R$ ${initialBalance},00 de saldo inicial!` });
           }
         }
         toast({ title: 'Conta criada com sucesso!' });

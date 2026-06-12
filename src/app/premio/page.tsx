@@ -71,18 +71,18 @@ export default function PremioPage() {
 
         const layouts = [
             [
-                {icon: 'trophy', val: 'R$ 1.000', win: true}, {icon: 'coins', val: 'R$ 5', win: false}, {icon: 'frown', val: 'Tente', win: false},
-                {icon: 'trophy', val: 'R$ 1.000', win: true}, {icon: 'bolt', val: 'Bônus', win: false}, {icon: 'star', val: 'R$ 10', win: false},
+                {icon: 'trophy', val: 'R$ 10', win: true}, {icon: 'coins', val: 'R$ 5', win: false}, {icon: 'frown', val: 'Tente', win: false},
+                {icon: 'trophy', val: 'R$ 10', win: true}, {icon: 'bolt', val: 'Bônus', win: false}, {icon: 'star', val: 'R$ 10', win: false},
                 {icon: 'coins', val: 'R$ 2', win: false}, {icon: 'gem', val: 'R$ 50', win: false}, {icon: 'frown', val: 'Nada', win: false}
             ],
             [
-                {icon: 'frown', val: 'Tente', win: false}, {icon: 'trophy', val: 'R$ 1.000', win: true}, {icon: 'coins', val: 'R$ 5', win: false},
-                {icon: 'gem', val: 'R$ 20', win: false}, {icon: 'star', val: 'R$ 10', win: false}, {icon: 'trophy', val: 'R$ 1.000', win: true},
+                {icon: 'frown', val: 'Tente', win: false}, {icon: 'trophy', val: 'R$ 10', win: true}, {icon: 'coins', val: 'R$ 5', win: false},
+                {icon: 'gem', val: 'R$ 20', win: false}, {icon: 'star', val: 'R$ 10', win: false}, {icon: 'trophy', val: 'R$ 10', win: true},
                 {icon: 'bolt', val: 'Bônus', win: false}, {icon: 'coins', val: 'R$ 2', win: false}, {icon: 'frown', val: 'Nada', win: false}
             ],
             [
-                {icon: 'trophy', val: 'R$ 1.000', win: true}, {icon: 'coins', val: 'R$ 5', win: false}, {icon: 'trophy', val: 'R$ 1.000', win: true},
-                {icon: 'star', val: 'R$ 10', win: false}, {icon: 'trophy', val: 'R$ 1.000', win: true}, {icon: 'gem', val: 'R$ 50', win: false},
+                {icon: 'trophy', val: 'R$ 10', win: true}, {icon: 'coins', val: 'R$ 5', win: false}, {icon: 'trophy', val: 'R$ 10', win: true},
+                {icon: 'star', val: 'R$ 10', win: false}, {icon: 'trophy', val: 'R$ 10', win: true}, {icon: 'gem', val: 'R$ 50', win: false},
                 {icon: 'bolt', val: 'Bônus', win: false}, {icon: 'coins', val: 'R$ 2', win: false}, {icon: 'frown', val: 'Nada', win: false}
             ]
         ];
@@ -191,7 +191,7 @@ export default function PremioPage() {
         }
 
         (window as any).shareToUnlock = () => {
-            const text = encodeURIComponent("🎁 Acabei de ganhar R$ 1.000,00 de bônus no Raspa Green! \n\nEstão dando 3 chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio");
+            const text = encodeURIComponent("🎁 Acabei de ganhar R$ 10,00 de saldo real no Raspa Green! \n\nEstão dando chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio");
             window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
             btnWhatsapp.style.display = 'none';
             verifyText.style.display = 'block';
@@ -202,8 +202,8 @@ export default function PremioPage() {
         }
 
         (window as any).redirectToRegister = () => {
-            // Salva o presente de 1000 reais na sessão (Sincronizado com o visual da página)
-            sessionStorage.setItem('funnelGift', '1000');
+            // Salva o presente de 10 reais na sessão
+            sessionStorage.setItem('funnelGift', '10');
             // Redireciona para a home com parâmetro para abrir o popup de registro
             router.push('/?auth=register');
         }
@@ -263,7 +263,7 @@ export default function PremioPage() {
             </div>
 
             <main className="funnel-container">
-                <h2 className="cta-title">Ganhe <span className="highlight">R$ 1.000,00</span> de Bônus</h2>
+                <h2 className="cta-title">Ganhe <span className="highlight">R$ 10,00</span> de Presente</h2>
                 <div className="attempts-display" id="attemptsText" ref={attemptsTextRef}>Tentativa 1 de 3</div>
 
                 <div className="game-border-box">
@@ -273,7 +273,7 @@ export default function PremioPage() {
                         <div className="start-overlay" id="startOverlay" ref={startOverlayRef}>
                             <i className="fas fa-gift" style={{fontSize: "60px", color: "#2ee606", marginBottom: "20px"}}></i>
                             <p style={{color: "#fff", textAlign: "center", marginBottom: "30px", maxWidth: "80%"}}>
-                                Você tem <strong>3 chances</strong> para encontrar 3 troféus e ganhar o bônus de aposta!
+                                Você tem <strong>3 chances</strong> para encontrar 3 troféus e ganhar saldo para jogar!
                             </p>
                             <button className="btn-start" onClick={() => (window as any).startGame()}>RASPAR AGORA</button>
                         </div>
@@ -300,11 +300,11 @@ export default function PremioPage() {
                             Você encontrou os 3 troféus!
                         </p>
                         <div style={{background: "#222", padding: "15px", borderRadius: "8px", margin: "15px 0"}}>
-                            <p style={{color: "#aaa", fontSize: "0.9rem", marginBottom: "5px"}}>Seu Bônus de Boas-Vindas:</p>
-                            <div style={{color: "#2ee606", fontSize: "2.2rem", fontWeight: 900}}>R$ 1.000,00</div>
+                            <p style={{color: "#aaa", fontSize: "0.9rem", marginBottom: "5px"}}>Seu Presente de Boas-Vindas:</p>
+                            <div style={{color: "#2ee606", fontSize: "2.2rem", fontWeight: 900}}>R$ 10,00</div>
                         </div>
                         <button className="btn-claim-step1" onClick={() => (window as any).goToStep2()}>
-                            RESGATAR BÔNUS AGORA
+                            RESGATAR MEU SALDO AGORA
                         </button>
                     </div>
                     <div id="step-2" ref={step2Ref} style={{display: "none"}}>
@@ -318,7 +318,7 @@ export default function PremioPage() {
                             Seu saldo já está reservado! Para confirmar que você não é um robô, compartilhe com <strong>1 grupo no WhatsApp</strong>.
                         </p>
                         <button className="btn-whatsapp" ref={btnWhatsappRef} onClick={() => (window as any).shareToUnlock()}>
-                            <i className="fab fa-whatsapp" style={{fontSize: "1.3rem"}}></i> ATIVAR MEU BÔNUS
+                            <i className="fab fa-whatsapp" style={{fontSize: "1.3rem"}}></i> ATIVAR MEU SALDO
                         </button>
                         <p id="verify-text" ref={verifyTextRef} style={{display:"none", color: "#aaa", fontSize: "0.8rem", marginTop: "15px"}}>
                             <i className="fas fa-spinner fa-spin"></i> Verificando compartilhamento...
@@ -328,7 +328,7 @@ export default function PremioPage() {
                         <i className="fas fa-check-circle" style={{fontSize: "60px", color: "#2ee606"}}></i>
                         <h2 style={{color: "#2ee606", margin: "10px 0"}}>SALDO LIBERADO!</h2>
                         <p style={{color: "#aaa", marginBottom: "20px"}}>
-                            Seu bônus de R$ 1.000,00 já está pronto para uso.
+                            Seu presente de R$ 10,00 já está pronto para uso.
                         </p>
                         <button className="btn-final" onClick={() => (window as any).redirectToRegister()}>
                             JOGAR AGORA <i className="fas fa-arrow-right"></i>

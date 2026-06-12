@@ -1,3 +1,4 @@
+'use server';
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -191,8 +192,9 @@ export default function PremioPage() {
         }
 
         (window as any).shareToUnlock = () => {
-            const bannerUrl = "https://s3.typebotstorage.com/public/workspaces/cm50sof1200086yjtr125akew/typebots/cmqbcpqvu00000bjjs4gus99e/blocks/roch7rp4prc5n0c6q7n8dsjv?v=1781295029916";
-            const shareText = "🎁 Acabei de ganhar R$ 10,00 de saldo real no Raspa Green! \n\nEstão dando chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio\n\n" + bannerUrl;
+            // A imagem no topo do WhatsApp já é gerada pelo OpenGraph no layout.tsx
+            // Removendo o link bruto da imagem no final do texto para ficar mais limpo.
+            const shareText = "🎁 Acabei de ganhar R$ 10,00 de saldo real no Raspa Green! \n\nEstão dando chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio";
             const encodedText = encodeURIComponent(shareText);
             
             window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
@@ -248,10 +250,10 @@ export default function PremioPage() {
             clearInterval(winnerInterval);
             canvas.removeEventListener('mousedown', handleMouseDown);
             canvas.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
+            window.addEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('touchstart', handleTouchStart);
             canvas.removeEventListener('touchmove', handleTouchMove);
-            window.removeEventListener('touchend', handleTouchEnd);
+            window.addEventListener('touchend', handleTouchEnd);
         }
 
     }, [router]);

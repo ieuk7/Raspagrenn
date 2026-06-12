@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -204,7 +205,8 @@ export default function PremioPage() {
         (window as any).redirectToRegister = () => {
             // Save gift flag in session
             sessionStorage.setItem('funnelGift', '10');
-            router.push('/registro');
+            // Redirect to home with query param to open registration modal
+            router.push('/?auth=register');
         }
 
         function startConfetti() {

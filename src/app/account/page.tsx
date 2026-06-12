@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -55,9 +56,9 @@ export default function AccountPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // If auth state is resolved and there's no user, redirect to login page.
+    // If auth state is resolved and there's no user, redirect to home with auth popup command.
     if (!isUserLoading && !user) {
-      router.push('/login');
+      router.push('/?auth=login');
     }
   }, [isUserLoading, user, router]);
 

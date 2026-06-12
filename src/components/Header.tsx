@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -16,16 +17,33 @@ import {
   Star,
   UserPlus,
 } from 'lucide-react';
-import LoginPage from '@/app/login/page';
+import LoginPage from '@/components/auth/LoginPage';
 import { useUser } from '@/firebase';
 import { UserNav } from '@/components/UserNav';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import './header.css';
 
 export function Header() {
   const { user, isUserLoading } = useUser();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [initialView, setInitialView] = useState<'login' | 'register'>('login');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const authAction = searchParams.get('auth');
+    if (authAction === 'login' || authAction === 'register') {
+      setInitialView(authAction as 'login' | 'register');
+      setIsLoginOpen(true);
+      
+      // Clear the query param after opening to avoid re-opening on reload
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete('auth');
+      const newUrl = `${window.location.pathname}${newParams.toString() ? '?' + newParams.toString() : ''}`;
+      router.replace(newUrl);
+    }
+  }, [searchParams, router]);
 
   const openAuthDialog = (view: 'login' | 'register') => {
     setInitialView(view);

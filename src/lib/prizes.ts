@@ -74,7 +74,7 @@ const pool10Reais: Prize[] = [
 
 const pool25Reais: Prize[] = [
     { name: '50.000 Reais', value: 50000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50000%20reais.webp', weight: 0.1 },
-    { name: '25.000 Reais', value: 25000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/25000%20reais.webp', weight: 0.2 },
+    { name: 'Viagem para Maldivas', value: 25000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/25000%20reais.webp', weight: 0.2 },
     { name: '10.000 Reais', value: 10000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10000%20reais.webp', weight: 0.5 },
     { name: '5.000 Reais', value: 5000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5.000%20Reais%20(%205.000%20).webp', weight: 1 },
     { name: '500 Reais', value: 500, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/500%20reais.webp', weight: 10 },
@@ -85,7 +85,7 @@ const pool25Reais: Prize[] = [
 
 const pool50Reais: Prize[] = [
     { name: '100.000 Reais', value: 100000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/100000%20reais.webp', weight: 0.05 },
-    { name: '50.000 Reais', value: 50000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50000%20reais.webp', weight: 0.1 },
+    { name: 'Carro Popular (Entrada)', value: 50000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50000%20reais.webp', weight: 0.1 },
     { name: '20.000 Reais', value: 20000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/20000%20reais.webp', weight: 0.3 },
     { name: '10.000 Reais', value: 10000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/10000%20reais.webp', weight: 0.8 },
     { name: '1.000 Reais', value: 1000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/1000%20reais.webp', weight: 5 },
@@ -95,8 +95,8 @@ const pool50Reais: Prize[] = [
 ];
 
 const pool100Reais: Prize[] = [
-    { name: '250.000 Reais', value: 250000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/250000%20reais.webp', weight: 0.02 },
-    { name: '100.000 Reais', value: 100000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/100000%20reais.webp', weight: 0.05 },
+    { name: 'Apartamento Próprio', value: 250000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/250000%20reais.webp', weight: 0.02 },
+    { name: 'Prêmio de 100 Mil', value: 100000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/100000%20reais.webp', weight: 0.05 },
     { name: '50.000 Reais', value: 50000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/50000%20reais.webp', weight: 0.1 },
     { name: '25.000 Reais', value: 25000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/25000%20reais.webp', weight: 0.5 },
     { name: '5.000 Reais', value: 5000, imageUrl: 'https://ik.imagekit.io/cd7ikp5fv/rewards%20raspadinha/5.000%20Reais%20(%205.000%20).webp', weight: 2 },

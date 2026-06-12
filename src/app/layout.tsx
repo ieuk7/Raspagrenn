@@ -4,6 +4,7 @@ import { FirebaseClientProvider } from '@/firebase';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Raspa Green',
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <FirebaseClientProvider>
           <div className="min-h-screen bg-background text-foreground flex flex-col">
-            <Header />
+            <Suspense fallback={<div className="h-16 bg-background border-b border-zinc-800 animate-pulse" />}>
+              <Header />
+            </Suspense>
             <main className="flex-grow">{children}</main>
             <Footer />
           </div>

@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import './login.css';
@@ -115,7 +114,7 @@ export default function LoginPage({ onAuthSuccess, initialView = 'login' }: { on
           
           if (funnelGift) {
             sessionStorage.removeItem('funnelGift');
-            toast({ title: `Parabéns! Você ganhou R$ ${initialBalance},00 de saldo inicial!` });
+            toast({ title: `Parabéns! Você ganhou R$ ${new Intl.NumberFormat('pt-BR').format(initialBalance)},00 de saldo inicial!` });
           }
         }
         toast({ title: 'Conta criada com sucesso!' });

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -203,9 +202,9 @@ export default function PremioPage() {
         }
 
         (window as any).redirectToRegister = () => {
-            // Save gift flag in session
-            sessionStorage.setItem('funnelGift', '10');
-            // Redirect to home with query param to open registration modal
+            // Salva o presente de 1000 reais na sessão (Sincronizado com o visual da página)
+            sessionStorage.setItem('funnelGift', '1000');
+            // Redireciona para a home com parâmetro para abrir o popup de registro
             router.push('/?auth=register');
         }
 

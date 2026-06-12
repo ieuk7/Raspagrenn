@@ -191,8 +191,11 @@ export default function PremioPage() {
         }
 
         (window as any).shareToUnlock = () => {
-            const text = encodeURIComponent("🎁 Acabei de ganhar R$ 10,00 de saldo real no Raspa Green! \n\nEstão dando chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio");
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            const bannerUrl = "https://s3.typebotstorage.com/public/workspaces/cm50sof1200086yjtr125akew/typebots/cmqbcpqvu00000bjjs4gus99e/blocks/roch7rp4prc5n0c6q7n8dsjv?v=1781295029916";
+            const shareText = "🎁 Acabei de ganhar R$ 10,00 de saldo real no Raspa Green! \n\nEstão dando chances grátis pra todo mundo. \n\nClica aqui pra pegar o seu agora: 👇\n" + window.location.origin + "/premio\n\n" + bannerUrl;
+            const encodedText = encodeURIComponent(shareText);
+            
+            window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
             btnWhatsapp.style.display = 'none';
             verifyText.style.display = 'block';
             setTimeout(() => {

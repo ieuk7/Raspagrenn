@@ -263,7 +263,7 @@ export default function PremioPage() {
             </div>
 
             <main className="funnel-container">
-                <h2 className="cta-title">Ganhe <span className="highlight">R$ 10,00</span> de Presente</h2>
+                <h2 className="cta-title">Ganhe até <span className="highlight">R$ 1.000,00</span> de Presente</h2>
                 <div className="attempts-display" id="attemptsText" ref={attemptsTextRef}>Tentativa 1 de 3</div>
 
                 <div className="game-border-box">

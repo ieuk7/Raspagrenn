@@ -51,6 +51,12 @@ const nextConfig: NextConfig = {
         hostname: 'png.pngtree.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3.typebotstorage.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

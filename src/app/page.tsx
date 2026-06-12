@@ -14,11 +14,11 @@ import { WinnersTicker } from '@/components/WinnersTicker';
 export default function HomePage() {
   const banners = [
     {
-      src: 'https://ik.imagekit.io/cd7ikp5fv/IMG_4617.PNG',
+      src: 'https://s3.typebotstorage.com/public/workspaces/cm50sof1200086yjtr125akew/typebots/cmqbcpqvu00000bjjs4gus99e/blocks/c9wv27pu0cb7oy43nvnaeoso?v=1781294449487',
       alt: 'Banner 1',
     },
     {
-      src: 'https://ik.imagekit.io/cd7ikp5fv/IMG_4614.PNG',
+      src: 'https://s3.typebotstorage.com/public/workspaces/cm50sof1200086yjtr125akew/typebots/cmqbcpqvu00000bjjs4gus99e/blocks/zw58bvvehmfke6fcb8jyme0g?v=1781294782157',
       alt: 'Banner 2',
     },
   ];
@@ -40,7 +40,8 @@ export default function HomePage() {
                 alt={banner.alt}
                 width={1280}
                 height={400}
-                className="rounded-lg object-cover w-full"
+                className="rounded-lg object-cover w-full aspect-[16/5]"
+                priority={index === 0}
               />
             </CarouselItem>
           ))}
